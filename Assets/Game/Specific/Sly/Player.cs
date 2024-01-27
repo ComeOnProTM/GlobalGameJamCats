@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
@@ -36,6 +38,20 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashMaxTime = 0.8f;
     private float dashTimer;
     private Vector2 savedVelocity;
+
+    [SerializeField] private int healthBackingField = 20;
+    public int Health 
+    {
+        get => healthBackingField;
+        set 
+        {
+            healthBackingField = clamp(value, 0, maxHealth);
+        }
+    }
+
+    public int maxHealth;
+
+    public float HealthPrimantissa => (float)Health / (float)maxHealth;
 
     public enum PlayerState
     {
