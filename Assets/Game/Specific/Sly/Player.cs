@@ -20,9 +20,6 @@ public class Player : MonoBehaviour
         public DashState eventDashState;
     }
 
-    [SerializeField]
-    private Rigidbody2D rb;
-
     [Header("Movement")]
     [SerializeField] private PlayerState playerState;
     [SerializeField] private float movementSpeed;
@@ -99,7 +96,7 @@ public class Player : MonoBehaviour
                 eventPlayerState = playerState,
             });
         }
-        
+
         inputVector = inputVector.normalized;
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * movementSpeed * Time.deltaTime;
@@ -118,7 +115,7 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-            break;
+                break;
             case DashState.Dashing:
                 dashTimer += Time.deltaTime * 3;
                 isDashing = true;
@@ -132,7 +129,7 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-            break;
+                break;
             case DashState.Cooldown:
                 dashTimer -= Time.deltaTime;
                 isDashing = false;
@@ -145,24 +142,24 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-            break;
+                break;
         }
 
         if (isDashing)
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
-            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            //moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
 
             // transform.position += moveDir * dashSpeed * Time.deltaTime;
             rb.AddForce(new Vector2(moveDir.x, moveDir.y) * dashSpeed);
             //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+            //transform.position += moveDir * dashSpeed * Time.deltaTime;
         }
         else
         {
             moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-            //transform.position += moveDir * movementSpeed * Time.deltaTime;
-            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * movementSpeed * Time.deltaTime);
+            transform.position += moveDir * movementSpeed * Time.deltaTime;
         }
     }
 
