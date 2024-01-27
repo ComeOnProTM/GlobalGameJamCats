@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * speed * Time.deltaTime;
 
-        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime);
+        //transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime);
 
         // Dash input (you can change this condition based on your input setup)
         if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
