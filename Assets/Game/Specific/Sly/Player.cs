@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,6 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float dashSpeed;
     private bool isDashing = false;
+    private float radius = 1;
+    public LayerMask layermask = 1 << 6;
 
     private void Awake()
     {
@@ -26,6 +31,22 @@ public class Player : MonoBehaviour
             // Move the player in the dash direction with dash speed
             transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
         }
+
+    //private void OnTriggerEnter(Collider col)
+    //{
+    //    Debug.Log("test");
+    //    if (isDashing)
+    //    {
+    //        Debug.Log("taste: " + col + "  : " +  col.gameObject + "  : " + col.gameObject.GetComponent<SmallFireScript>());
+
+    //        if (col.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+    //        {
+    //            Debug.Log("Lol");
+    //            Destroy(fire)
+    //            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+    //        }
+    //    }
+    //}
 
         // Regular movement based on keyboard input
         Vector2 inputVector = new Vector2(0, 0);
@@ -59,9 +80,13 @@ public class Player : MonoBehaviour
             StartCoroutine(Dash());
         }
     }
+    
 
     IEnumerator Dash()
     {
+
+        Extinguish();
+        Debug.Log("Dashed");
         isDashing = true;
 
         // Wait for a short duration for the dash
@@ -69,9 +94,22 @@ public class Player : MonoBehaviour
 
         isDashing = false;
     }
-
+ 
     public bool IsDashing()
     {
         return isDashing;
+    }
+}
+void Extinguish()
+    {
+
+        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+
+        foreach (var hitCollider in hitColliders) { 
+            if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+        {
+            Destroy(fire);
+            }
+        }
     }
 }
