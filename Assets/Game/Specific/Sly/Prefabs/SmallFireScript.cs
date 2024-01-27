@@ -10,7 +10,7 @@ public class SmallFireScript : MonoBehaviour
     [SerializeField] private GameObject FireParticle;
     public float FireTimeA = 5;
     public float FireTimeB = 10;
-    [SerializeField] private float radius = 3f;
+    [SerializeField] private float radius = 0.6f;
     public LayerMask layermask = 1 << 6;
     private IEnumerator Fire()
     {
@@ -18,36 +18,31 @@ public class SmallFireScript : MonoBehaviour
 
         while (true)
         {
-            float randomValue = Random.value;
+            //float randomValue = Random.value;
 
             // Check if the random value is greater than 0.5
-            if (randomValue > 0.2f)
-            {
+            //if (randomValue > 0.2f)
+            //{
                 // Your code here (this code will be skipped 50% of the time)
                 yield return new WaitForSeconds(Random.Range(FireTimeA, FireTimeB));
-            }
-            else
+            //}
+            /*else
             {
                 // This block will be executed when the random value is less than or equal to 0.5
                 Debug.Log("This line of code is skipped.");
-            }
+            }*/
             
 
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+            Collider[] _hitCollidersList = Physics.OverlapSphere(transform.position, radius, layermask);
             // anything with a collider on the fire layer is affected
-            foreach (var hitCollider in hitColliders)
+            for (int i = 0; i < _hitCollidersList.Length; i++)
             {
-                if (!hitCollider.TryGetComponent<SmallFireScript>(out _))
+                if (!_hitCollidersList[i].TryGetComponent<SmallFireScript>(out _) && _hitCollidersList[i].TryGetComponent(out Burnable burnable)
+                    && burnable.Flamability < Random.Range(0f, 1f))
                 {
-                    if (hitCollider.TryGetComponent(out Burnable burnable))
-                    {
-
-                        if (burnable.Flamability < Random.Range(0f, 1f))
-                        {
-                            SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
-                            spawnedFire.FireParticle = FireParticle;
-                        }
-                    }
+                    SmallFireScript spawnedFire = _hitCollidersList[i].gameObject.AddComponent<SmallFireScript>();
+                    spawnedFire.FireParticle = FireParticle;
+                    continue;
                 }
             }
 
