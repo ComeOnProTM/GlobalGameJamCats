@@ -6,31 +6,50 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField]private float speed;
+    [SerializeField]
+    private float speed;
+
+    [SerializeField]
+    private Rigidbody2D rb;
+    private Vector2 movement;
+
+    void Start()
+    {
+        //Set running time to 1
+        Time.timeScale = 1f;
+    }
+
+    void FixedUpdate()
+    {
+        // Movement
+        rb.MovePosition(rb.position + movement * 1.5f * Time.fixedDeltaTime);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Handle collision with other objects
+        Debug.Log("Collision Detected");
+    }
 
     // Update is called once per frame
     void Update()
     {
-        Vector2 inputVector = new Vector2(0, 0);
+        movement = new Vector2(0, 0);
         
         if(Input.GetKey(KeyCode.W)) {
-            inputVector.y = 1;
+            movement.y = 1;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            inputVector.x = -1;
+            movement.x = -1;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            inputVector.y = -1;
+            movement.y = -1;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            inputVector.x = 1;
+            movement.x = 1;
         }
-        inputVector = inputVector.normalized;
-        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-        transform.position += moveDir * speed * Time.deltaTime;
-
     }
 }
