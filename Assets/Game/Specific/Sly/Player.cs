@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         {
             case DashState.Ready:
                 var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-                if (isDashKeyDown)
+                if (isDashKeyDown && inputVector.x != 0 && inputVector.y != 0)
                 {
                     savedVelocity = inputVector;
                     rb.velocity = new Vector2 (inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
