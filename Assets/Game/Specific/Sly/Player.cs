@@ -1,108 +1,98 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
+using System.Drawing;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
-    public static Player Instance;
+    [SerializeField] private float speed;
+    [SerializeField] private float dashSpeed;
+    private bool isDashing = false;
+    private float radius = 1;
+    public LayerMask layermask = 1 << 6;
 
-    [Header("Player")]
-    [SerializeField] private float movementSpeed = 7f;
-    [SerializeField] private Rigidbody2D rb;
-    private bool isDashing;
 
-    [Header("Dash")]
-    [SerializeField] private float dashSpeed = 15f;
-    [SerializeField] private DashState dashState;
-    [SerializeField] private float dashMaxTime = 0.8f;
-    private float dashTimer;
-    private Vector2 savedVelocity;
+    //private void OnTriggerEnter(Collider col)
+    //{
+    //    Debug.Log("test");
+    //    if (isDashing)
+    //    {
+    //        Debug.Log("taste: " + col + "  : " +  col.gameObject + "  : " + col.gameObject.GetComponent<SmallFireScript>());
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
+    //        if (col.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+    //        {
+    //            Debug.Log("Lol");
+    //            Destroy(fire)
+    //            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+    //        }
+    //    }
+    //}
     void Update()
     {
+
         // Regular movement based on keyboard input
         Vector2 inputVector = new Vector2(0, 0);
 
-        if (Input.GetKey(KeyCode.W) && !isDashing)
+        if (Input.GetKey(KeyCode.W))
         {
             inputVector.y = 1;
         }
-        if (Input.GetKey(KeyCode.A) && !isDashing)
+        if (Input.GetKey(KeyCode.A))
         {
             inputVector.x = -1;
         }
-        if (Input.GetKey(KeyCode.S) && !isDashing)
+        if (Input.GetKey(KeyCode.S))
         {
             inputVector.y = -1;
         }
-        if (Input.GetKey(KeyCode.D) && !isDashing)
+        if (Input.GetKey(KeyCode.D))
         {
             inputVector.x = 1;
         }
 
         inputVector = inputVector.normalized;
+        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
+        transform.position += moveDir * speed * Time.deltaTime;
 
-        switch (dashState)
+        // Dash input (you can change this condition based on your input setup)
+        if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
         {
-            case DashState.Ready:
-                var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-                if (isDashKeyDown /*&& inputVector.x != 0 && inputVector.y != 0*/)
-                {
-                    savedVelocity = inputVector;
-                    rb.velocity = new Vector2 (inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
-                    dashState = DashState.Dashing;
-                }
-                break;
-            case DashState.Dashing:
-                dashTimer += Time.deltaTime * 3;
-                isDashing = true;
-                if (dashTimer >= dashMaxTime)
-                {
-                    //dashTimer = maxDash;
-                    //rb.velocity = savedVelocity;
-                    dashState = DashState.Cooldown;
-                }
-                break;
-            case DashState.Cooldown:
-                dashTimer -= Time.deltaTime;
-                isDashing = false;
-                if (dashTimer <= 0)
-                {
-                    dashTimer = 0;
-                    dashState = DashState.Ready;
-                }
-                break;
-        }
-
-        if (isDashing)
-        {
-            // Move the player in the dash direction with dash speed
-            Vector3 moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
-            transform.position += moveDir * dashSpeed * Time.deltaTime;
-        }
-        else
-        {
-            Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-            transform.position += moveDir * movementSpeed * Time.deltaTime;
+            StartCoroutine(Dash());
         }
     }
-        
-    public enum DashState
+
+
+    IEnumerator Dash()
     {
-        Ready,
-        Dashing,
-        Cooldown
+        Extinguish();
+        Debug.Log("Dashed");
+        isDashing = true;
+
+        // Calculate dash direction based on mouse position
+        Vector3 dashDirection = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
+
+        // Move the player in the dash direction with dash speed
+        transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
+
+        // Wait for a short duration for the dash
+        yield return new WaitForSeconds(0.5f);
+
+        isDashing = false;
     }
 
-    public bool GetIsDashing()
+    void Extinguish()
     {
-        return isDashing;
+
+        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+            {
+                Destroy(fire);
+            }
+        }
     }
 }

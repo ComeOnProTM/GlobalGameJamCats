@@ -9,6 +9,7 @@ public class SmallFireScript : MonoBehaviour
 {
     [SerializeField] private GameObject FireParticle;
     public float FireTimeA = 5;
+    private GameObject SpawnedParticle;
     public float FireTimeB = 10;
     [SerializeField] private float radius = 3f;
     public LayerMask layermask = 1 << 6;
@@ -31,12 +32,13 @@ public class SmallFireScript : MonoBehaviour
                 // This block will be executed when the random value is less than or equal to 0.5
                 Debug.Log("This line of code is skipped.");
             }
-            
+
 
             var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
             // anything with a collider on the fire layer is affected
             foreach (var hitCollider in hitColliders)
             {
+
                 if (!hitCollider.TryGetComponent<SmallFireScript>(out _))
                 {
                     if (hitCollider.TryGetComponent(out Burnable burnable))
@@ -55,6 +57,11 @@ public class SmallFireScript : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        Destroy(SpawnedParticle);
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, radius);
@@ -66,7 +73,7 @@ public class SmallFireScript : MonoBehaviour
 
         if (FireParticle != null)
         {
-            Instantiate(original: FireParticle, position: transform.position, rotation: transform.rotation);
+            SpawnedParticle = Instantiate(original: FireParticle, position: transform.position, rotation: transform.rotation);
         }
     }
 }
