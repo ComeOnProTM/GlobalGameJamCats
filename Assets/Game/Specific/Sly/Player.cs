@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,9 +10,28 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float dashSpeed;
     private bool isDashing = false;
+    private float radius = 1;
+    public LayerMask layermask = 1 << 6;
 
+
+    //private void OnTriggerEnter(Collider col)
+    //{
+    //    Debug.Log("test");
+    //    if (isDashing)
+    //    {
+    //        Debug.Log("taste: " + col + "  : " +  col.gameObject + "  : " + col.gameObject.GetComponent<SmallFireScript>());
+
+    //        if (col.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+    //        {
+    //            Debug.Log("Lol");
+    //            Destroy(fire)
+    //            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+    //        }
+    //    }
+    //}
     void Update()
     {
+
         // Regular movement based on keyboard input
         Vector2 inputVector = new Vector2(0, 0);
 
@@ -40,9 +62,11 @@ public class Player : MonoBehaviour
             StartCoroutine(Dash());
         }
     }
+    
 
     IEnumerator Dash()
     {
+        Extinguish();
         Debug.Log("Dashed");
         isDashing = true;
 
@@ -56,5 +80,18 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         isDashing = false;
+    }
+
+void Extinguish()
+    {
+
+        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+
+        foreach (var hitCollider in hitColliders) { 
+            if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+        {
+            Destroy(fire);
+            }
+        }
     }
 }
