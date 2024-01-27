@@ -477,7 +477,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b13f27ac100a342b834bb0d7427e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 321032835}
   playerState: 0
   movementSpeed: 5
   dashSpeed: 94
@@ -486,6 +485,8 @@ MonoBehaviour:
     m_Bits: 64
   dashState: 0
   dashMaxTime: 0.2
+  dashCooldown: 2
+  rb: {fileID: 321032835}
 --- !u!4 &321032834
 Transform:
   m_ObjectHideFlags: 0
@@ -1237,15 +1238,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b13f27ac100a342b834bb0d7427e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 976567601}
   playerState: 0
   movementSpeed: 5
-  dashSpeed: 94
+  dashSpeed: 16
   layermask:
     serializedVersion: 2
     m_Bits: 64
   dashState: 0
-  dashMaxTime: 0.2
+  dashMaxTime: 0.8
+  dashCooldown: 2
+  rb: {fileID: 976567601}
 --- !u!61 &976567600
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1304,8 +1306,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_LinearDrag: 12
+  m_AngularDrag: 1
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:

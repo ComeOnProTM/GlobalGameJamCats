@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     [Header("Dash")]
     [SerializeField] private DashState dashState;
     [SerializeField] private float dashMaxTime = 0.8f;
+    [SerializeField] private float dashCooldown = 2f;
     private float dashTimer;
     private Vector2 savedVelocity;
 
@@ -120,7 +121,7 @@ public class Player : MonoBehaviour
                 }
                 break;
             case DashState.Dashing:
-                dashTimer += Time.deltaTime * 3;
+                dashTimer += Time.deltaTime;
                 isDashing = true;
                 if (dashTimer >= dashMaxTime)
                 {
@@ -134,9 +135,9 @@ public class Player : MonoBehaviour
                 }
                 break;
             case DashState.Cooldown:
-                dashTimer -= Time.deltaTime;
+                dashTimer += Time.deltaTime;
                 isDashing = false;
-                if (dashTimer <= 0)
+                if (dashTimer >= dashCooldown)
                 {
                     dashTimer = 0;
                     dashState = DashState.Ready;
@@ -152,16 +153,15 @@ public class Player : MonoBehaviour
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
-            //moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
 
             // transform.position += moveDir * dashSpeed * Time.deltaTime;
-            rb.AddForce(new Vector2(moveDir.x, moveDir.y) * dashSpeed);
+            //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
             //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
-            //transform.position += moveDir * dashSpeed * Time.deltaTime;
+            transform.position += moveDir * dashSpeed * Time.deltaTime;
         }
         else
         {
-            moveDir = new Vector3(inputVector.x, inputVector.y, 0);
             transform.position += moveDir * movementSpeed * Time.deltaTime;
         }
     }
