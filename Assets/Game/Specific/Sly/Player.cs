@@ -9,7 +9,19 @@ public class Player : MonoBehaviour
 {
     public static Player Instance;
 
+    public event EventHandler<OnPlayerStateChangedEventArgs> OnPlayerStateChanged;
+    public event EventHandler<OnDashStateChangedEventArgs> OnDashStateChanged;
+    public class OnPlayerStateChangedEventArgs : EventArgs
+    {
+        public PlayerState eventPlayerState;
+    }
+    public class OnDashStateChangedEventArgs : EventArgs
+    {
+        public DashState eventDashState;
+    }
+
     [Header("Movement")]
+    [SerializeField] private PlayerState playerState;
     [SerializeField] private float movementSpeed;
     [SerializeField] private float dashSpeed = 15f;
     private bool isDashing = false;
@@ -22,7 +34,15 @@ public class Player : MonoBehaviour
     private float dashTimer;
     private Vector2 savedVelocity;
 
-    private enum DashState
+    public enum PlayerState
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+    }
+
+    public enum DashState
     {
         Ready,
         Dashing,
@@ -43,20 +63,40 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             inputVector.y = 1;
+            playerState = PlayerState.Up;
+            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+            {
+                eventPlayerState = playerState,
+            });
         }
         if (Input.GetKey(KeyCode.A))
         {
             inputVector.x = -1;
+            playerState = PlayerState.Left;
+            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+            {
+                eventPlayerState = playerState,
+            });
         }
         if (Input.GetKey(KeyCode.S))
         {
             inputVector.y = -1;
+            playerState = PlayerState.Down;
+            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+            {
+                eventPlayerState = playerState,
+            });
         }
         if (Input.GetKey(KeyCode.D))
         {
             inputVector.x = 1;
+            playerState = PlayerState.Right;
+            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+            {
+                eventPlayerState = playerState,
+            });
         }
-
+        
         inputVector = inputVector.normalized;
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * movementSpeed * Time.deltaTime;
@@ -70,6 +110,10 @@ public class Player : MonoBehaviour
                     savedVelocity = inputVector;
                     //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
                     dashState = DashState.Dashing;
+                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    {
+                        eventDashState = dashState,
+                    });
                 }
             break;
             case DashState.Dashing:
@@ -80,6 +124,10 @@ public class Player : MonoBehaviour
                     //dashTimer = maxDash;
                     //rb.velocity = savedVelocity;
                     dashState = DashState.Cooldown;
+                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    {
+                        eventDashState = dashState,
+                    });
                 }
             break;
             case DashState.Cooldown:
@@ -89,6 +137,10 @@ public class Player : MonoBehaviour
                 {
                     dashTimer = 0;
                     dashState = DashState.Ready;
+                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    {
+                        eventDashState = dashState,
+                    });
                 }
             break;
         }
@@ -107,17 +159,32 @@ public class Player : MonoBehaviour
         }
     }
 
-        void Extinguish()
+    void Extinguish()
+    {
+
+        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+
+        foreach (var hitCollider in hitColliders)
         {
-
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-
-            foreach (var hitCollider in hitColliders)
+            if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
             {
-                if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
-                {
-                    Destroy(fire);
-                }
+                Destroy(fire);
             }
         }
     }
+
+    public PlayerState GetPlayerState()
+    {
+        return playerState;
+    }
+
+    public DashState GetDashState()
+    {
+        return dashState;
+    }
+
+    public bool GetIsDashing()
+    {
+        return isDashing;
+    }
+}
