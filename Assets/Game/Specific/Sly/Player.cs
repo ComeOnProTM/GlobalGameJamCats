@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     [Header("Dash")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private DashState dashState;
-    [SerializeField] private float maxDash = 0.8f;
+    [SerializeField] private float dashMaxTime = 0.8f;
     private float dashTimer;
     private Vector2 savedVelocity;
 
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         {
             case DashState.Ready:
                 var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-                if (isDashKeyDown && inputVector.x != 0 && inputVector.y != 0)
+                if (isDashKeyDown /*&& inputVector.x != 0 && inputVector.y != 0*/)
                 {
                     savedVelocity = inputVector;
                     rb.velocity = new Vector2 (inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
@@ -63,7 +63,7 @@ public class Player : MonoBehaviour
             case DashState.Dashing:
                 dashTimer += Time.deltaTime * 3;
                 isDashing = true;
-                if (dashTimer >= maxDash)
+                if (dashTimer >= dashMaxTime)
                 {
                     //dashTimer = maxDash;
                     //rb.velocity = savedVelocity;
