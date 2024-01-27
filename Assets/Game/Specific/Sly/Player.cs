@@ -7,28 +7,33 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float dashSpeed;
+    public static Player Instance;
+
+    [Header("Movement")]
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float dashSpeed = 15f;
     private bool isDashing = false;
     private float radius = 1;
     public LayerMask layermask = 1 << 6;
 
+    [Header("Dash")]
+    [SerializeField] private DashState dashState;
+    [SerializeField] private float dashMaxTime = 0.8f;
+    private float dashTimer;
+    private Vector2 savedVelocity;
 
-    //private void OnTriggerEnter(Collider col)
-    //{
-    //    Debug.Log("test");
-    //    if (isDashing)
-    //    {
-    //        Debug.Log("taste: " + col + "  : " +  col.gameObject + "  : " + col.gameObject.GetComponent<SmallFireScript>());
+    private enum DashState
+    {
+        Ready,
+        Dashing,
+        Cooldown,
+    }
 
-    //        if (col.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
-    //        {
-    //            Debug.Log("Lol");
-    //            Destroy(fire)
-    //            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-    //        }
-    //    }
-    //}
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Update()
     {
 
@@ -54,45 +59,65 @@ public class Player : MonoBehaviour
 
         inputVector = inputVector.normalized;
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-        transform.position += moveDir * speed * Time.deltaTime;
+        transform.position += moveDir * movementSpeed * Time.deltaTime;
 
-        // Dash input (you can change this condition based on your input setup)
-        if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
+        switch (dashState)
         {
-            StartCoroutine(Dash());
+            case DashState.Ready:
+                var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
+                if (isDashKeyDown /*&& inputVector.x != 0 && inputVector.y != 0*/)
+                {
+                    savedVelocity = inputVector;
+                    //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
+                    dashState = DashState.Dashing;
+                }
+            break;
+            case DashState.Dashing:
+                dashTimer += Time.deltaTime * 3;
+                isDashing = true;
+                if (dashTimer >= dashMaxTime)
+                {
+                    //dashTimer = maxDash;
+                    //rb.velocity = savedVelocity;
+                    dashState = DashState.Cooldown;
+                }
+            break;
+            case DashState.Cooldown:
+                dashTimer -= Time.deltaTime;
+                isDashing = false;
+                if (dashTimer <= 0)
+                {
+                    dashTimer = 0;
+                    dashState = DashState.Ready;
+                }
+            break;
+        }
+
+        if (isDashing)
+        {
+            // Move the player in the dash direction with dash speed
+            Extinguish();
+            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            transform.position += moveDir * dashSpeed * Time.deltaTime;
+        }
+        else
+        {
+            moveDir = new Vector3(inputVector.x, inputVector.y, 0);
+            transform.position += moveDir * movementSpeed * Time.deltaTime;
         }
     }
 
-
-    IEnumerator Dash()
-    {
-        Extinguish();
-        Debug.Log("Dashed");
-        isDashing = true;
-
-        // Calculate dash direction based on mouse position
-        Vector3 dashDirection = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
-
-        // Move the player in the dash direction with dash speed
-        transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
-
-        // Wait for a short duration for the dash
-        yield return new WaitForSeconds(0.5f);
-
-        isDashing = false;
-    }
-
-    void Extinguish()
-    {
-
-        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-
-        foreach (var hitCollider in hitColliders)
+        void Extinguish()
         {
-            if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+
+            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+
+            foreach (var hitCollider in hitColliders)
             {
-                Destroy(fire);
+                if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
+                {
+                    Destroy(fire);
+                }
             }
         }
     }
-}
