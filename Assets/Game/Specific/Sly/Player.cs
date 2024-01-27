@@ -34,6 +34,9 @@ public class Player : MonoBehaviour
     private float dashTimer;
     private Vector2 savedVelocity;
 
+    [SerializeField]
+    private Rigidbody2D rb;
+
     public enum PlayerState
     {
         Up,
