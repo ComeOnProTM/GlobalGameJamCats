@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,9 +8,17 @@ public class Player : MonoBehaviour
 {
     public static Player Instance;
 
-    [SerializeField] private float speed;
-    [SerializeField] private float dashSpeed;
-    private bool isDashing = false;
+    [Header("Player")]
+    [SerializeField] private float movementSpeed = 7f;
+    [SerializeField] private Rigidbody2D rb;
+    private bool isDashing;
+
+    [Header("Dash")]
+    [SerializeField] private float dashSpeed = 15f;
+    [SerializeField] private DashState dashState;
+    [SerializeField] private float maxDash = 0.8f;
+    private float dashTimer;
+    private Vector2 savedVelocity;
 
     private void Awake()
     {
@@ -18,15 +27,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (isDashing)
-        {
-            // Calculate dash direction based on mouse position
-            Vector3 dashDirection = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
-
-            // Move the player in the dash direction with dash speed
-            transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
-        }
-
         // Regular movement based on keyboard input
         Vector2 inputVector = new Vector2(0, 0);
 
@@ -48,29 +48,60 @@ public class Player : MonoBehaviour
         }
 
         inputVector = inputVector.normalized;
-        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-        transform.position += moveDir * speed * Time.deltaTime;
 
-        //transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime);
-
-        // Dash input (you can change this condition based on your input setup)
-        if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
+        switch (dashState)
         {
-            StartCoroutine(Dash());
+            case DashState.Ready:
+                var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
+                if (isDashKeyDown)
+                {
+                    savedVelocity = inputVector;
+                    rb.velocity = new Vector2 (inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
+                    dashState = DashState.Dashing;
+                }
+                break;
+            case DashState.Dashing:
+                dashTimer += Time.deltaTime * 3;
+                isDashing = true;
+                if (dashTimer >= maxDash)
+                {
+                    //dashTimer = maxDash;
+                    //rb.velocity = savedVelocity;
+                    dashState = DashState.Cooldown;
+                }
+                break;
+            case DashState.Cooldown:
+                dashTimer -= Time.deltaTime;
+                isDashing = false;
+                if (dashTimer <= 0)
+                {
+                    dashTimer = 0;
+                    dashState = DashState.Ready;
+                }
+                break;
+        }
+
+        if (isDashing)
+        {
+            // Move the player in the dash direction with dash speed
+            Vector3 moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            transform.position += moveDir * dashSpeed * Time.deltaTime;
+        }
+        else
+        {
+            Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
+            transform.position += moveDir * movementSpeed * Time.deltaTime;
         }
     }
-
-    IEnumerator Dash()
+        
+    public enum DashState
     {
-        isDashing = true;
-
-        // Wait for a short duration for the dash
-        yield return new WaitForSeconds(0.2f);
-
-        isDashing = false;
+        Ready,
+        Dashing,
+        Cooldown
     }
 
-    public bool IsDashing()
+    public bool GetIsDashing()
     {
         return isDashing;
     }
