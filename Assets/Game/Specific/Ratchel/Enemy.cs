@@ -8,8 +8,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private LayerMask fireLayer;
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject);
-
         if (collision.gameObject == player.gameObject)
         {
             
