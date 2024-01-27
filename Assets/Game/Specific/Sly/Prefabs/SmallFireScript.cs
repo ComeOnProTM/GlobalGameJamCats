@@ -73,7 +73,8 @@ public class SmallFireScript : MonoBehaviour
 
         if (FireParticle != null)
         {
-            SpawnedParticle = Instantiate(original: FireParticle, position: transform.position, rotation: transform.rotation);
+            SpawnedParticle = Instantiate(original: FireParticle, position: transform.position, rotation: transform.rotation, transform);
+            SpawnedParticle.transform.localScale = Vector3.one;
         }
     }
 }
