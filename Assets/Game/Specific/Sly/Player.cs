@@ -34,6 +34,9 @@ public class Player : MonoBehaviour
     private float dashTimer;
     private Vector2 savedVelocity;
 
+    [SerializeField]
+    private Rigidbody2D rb;
+
     public enum PlayerState
     {
         Up,
@@ -149,8 +152,12 @@ public class Player : MonoBehaviour
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
-            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
-            transform.position += moveDir * dashSpeed * Time.deltaTime;
+            //moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+
+            // transform.position += moveDir * dashSpeed * Time.deltaTime;
+            rb.AddForce(new Vector2(moveDir.x, moveDir.y) * dashSpeed);
+            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+            //transform.position += moveDir * dashSpeed * Time.deltaTime;
         }
         else
         {
