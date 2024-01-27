@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
         public DashState eventDashState;
     }
 
+    [SerializeField]
+    private Rigidbody2D rb;
+
     [Header("Movement")]
     [SerializeField] private PlayerState playerState;
     [SerializeField] private float movementSpeed;
@@ -150,12 +153,16 @@ public class Player : MonoBehaviour
             // Move the player in the dash direction with dash speed
             Extinguish();
             moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
-            transform.position += moveDir * dashSpeed * Time.deltaTime;
+
+            //////////////transform.position += moveDir * dashSpeed * Time.deltaTime;
+
+            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * dashSpeed * Time.deltaTime);
         }
         else
         {
             moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-            transform.position += moveDir * movementSpeed * Time.deltaTime;
+            //transform.position += moveDir * movementSpeed * Time.deltaTime;
+            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * movementSpeed * Time.deltaTime);
         }
     }
 
