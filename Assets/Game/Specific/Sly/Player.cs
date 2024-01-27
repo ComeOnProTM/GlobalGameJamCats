@@ -154,9 +154,9 @@ public class Player : MonoBehaviour
             Extinguish();
             moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
 
-            //////////////transform.position += moveDir * dashSpeed * Time.deltaTime;
-
-            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * dashSpeed * Time.deltaTime);
+            // transform.position += moveDir * dashSpeed * Time.deltaTime;
+            rb.AddForce(new Vector2(moveDir.x, moveDir.y) * dashSpeed);
+            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
         }
         else
         {
