@@ -187,12 +187,7 @@ public class Player : MonoBehaviour
     void Extinguish()
     {
 
-        var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-
-        foreach (var hitCollider in hitColliders)
-        {
-
-
+        
             var hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
 
             foreach (var hitCollider in hitColliders)
