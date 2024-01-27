@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
 
     IEnumerator Dash()
     {
+        Debug.Log("Dashed");
         isDashing = true;
 
         // Calculate dash direction based on mouse position

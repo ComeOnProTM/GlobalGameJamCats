@@ -352,6 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  dashSpeed: 100
 --- !u!54 &101976841
 Rigidbody:
   m_ObjectHideFlags: 0
