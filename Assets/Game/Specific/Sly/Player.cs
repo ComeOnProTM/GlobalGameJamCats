@@ -186,18 +186,17 @@ public class Player : MonoBehaviour
 
     void Extinguish()
     {
+        var hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
 
-        
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
-
-            foreach (var hitCollider in hitColliders)
-
+        foreach (var hitCollider in hitColliders)
+        {
             if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
 
             {
                 Destroy(fire);
             }
         }
+    }
 
 
     private void PushNpc()
@@ -211,15 +210,10 @@ public class Player : MonoBehaviour
             if (collisionNpc[i].gameObject.TryGetComponent<Pushciv>(out Pushciv _NPC))
             {
                 Debug.Log("NPC");
-
             }
         }
 
         // npc movement = plauer movement
-
-
-
-
     }
 
     public PlayerState GetPlayerState()
