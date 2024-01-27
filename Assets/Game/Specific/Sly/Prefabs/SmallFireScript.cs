@@ -32,7 +32,7 @@ public class SmallFireScript : MonoBehaviour
                 // This block will be executed when the random value is less than or equal to 0.5
                 Debug.Log("This line of code is skipped.");
             }
-            
+
 
             var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
             // anything with a collider on the fire layer is affected

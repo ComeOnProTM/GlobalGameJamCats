@@ -6,10 +6,10 @@ public class CivScript : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        if (Player.Instance.GetIsDashing())
-        {
-            //Civilian Pushing script here
-            Debug.Log("Code fired when dashing into object");
-        }
-    }
+    //    if (Player.Instance.GetIsDashing())
+    //    {
+    //        //Civilian Pushing script here
+    //        Debug.Log("Code fired when dashing into object");
+    //    }
+    //}
 }
