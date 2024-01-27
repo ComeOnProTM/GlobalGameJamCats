@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -35,8 +34,6 @@ public class Player : MonoBehaviour
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * speed * Time.deltaTime;
 
-        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime);
-
         // Dash input (you can change this condition based on your input setup)
         if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
         {
@@ -46,6 +43,7 @@ public class Player : MonoBehaviour
 
     IEnumerator Dash()
     {
+        Debug.Log("Dashed");
         isDashing = true;
 
         // Calculate dash direction based on mouse position
