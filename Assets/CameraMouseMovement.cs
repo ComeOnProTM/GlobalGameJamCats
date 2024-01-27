@@ -26,12 +26,14 @@ public class CameraMouseMovement : MonoBehaviour
         }
 
         // Move the camera back to its original position
-        float x = transform.position.x;
-        float y = transform.position.y;
+        if (transform.position.x > 4 || transform.position.y > 4)  {
+            float x = transform.position.x;
+            float y = transform.position.y;
 
-        x = Mathf.Lerp(x, player.position.x, .04f);
-        y = Mathf.Lerp(y, player.position.y, .04f);
+            x = Mathf.Lerp(x, player.position.x, .04f);
+            y = Mathf.Lerp(y, player.position.y, .04f);
 
-        transform.position = new Vector3(x, y, -10f);
+            transform.position = new Vector3(x, y, -10f);
+        }
     }
 }
