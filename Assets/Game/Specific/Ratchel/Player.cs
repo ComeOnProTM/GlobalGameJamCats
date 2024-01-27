@@ -7,13 +7,19 @@ public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private float speed;
-
+    [SerializeField] private bool isdashing;
+        
 
     // Update is called once per frame
     void Update()
     {
         Vector2 inputVector = new Vector2(0, 0);
 
+        if (inputVector.getkey(keycode.E))
+        {
+
+            isdashing = true
+        }
 
         if (Input.GetKey(KeyCode.W))
         {
