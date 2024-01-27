@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
@@ -20,6 +22,9 @@ public class Player : MonoBehaviour
         public DashState eventDashState;
     }
 
+    [SerializeField]
+    private Rigidbody2D rb;
+
     [Header("Movement")]
     [SerializeField] private PlayerState playerState;
     [SerializeField] private float movementSpeed;
@@ -35,8 +40,19 @@ public class Player : MonoBehaviour
     private float dashTimer;
     private Vector2 savedVelocity;
 
-    [SerializeField]
-    private Rigidbody2D rb;
+    [SerializeField] private int healthBackingField = 20;
+    public int Health 
+    {
+        get => healthBackingField;
+        set 
+        {
+            healthBackingField = clamp(value, 0, maxHealth);
+        }
+    }
+
+    public int maxHealth;
+
+    public float HealthPrimantissa => (float)Health / (float)maxHealth;
 
     public enum PlayerState
     {
@@ -100,7 +116,7 @@ public class Player : MonoBehaviour
                 eventPlayerState = playerState,
             });
         }
-
+        
         inputVector = inputVector.normalized;
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * movementSpeed * Time.deltaTime;
@@ -119,7 +135,7 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-                break;
+            break;
             case DashState.Dashing:
                 dashTimer += Time.deltaTime;
                 isDashing = true;
@@ -133,7 +149,7 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-                break;
+            break;
             case DashState.Cooldown:
                 dashTimer += Time.deltaTime;
                 isDashing = false;
@@ -146,7 +162,7 @@ public class Player : MonoBehaviour
                         eventDashState = dashState,
                     });
                 }
-                break;
+            break;
         }
 
         if (isDashing)
