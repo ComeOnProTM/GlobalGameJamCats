@@ -168,17 +168,17 @@ public class Player : MonoBehaviour
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
-            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            //moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
 
-            //////////////transform.position += moveDir * dashSpeed * Time.deltaTime;
-
-            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * dashSpeed * Time.deltaTime);
+            // transform.position += moveDir * dashSpeed * Time.deltaTime;
+            rb.AddForce(new Vector2(moveDir.x, moveDir.y) * dashSpeed);
+            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+            //transform.position += moveDir * dashSpeed * Time.deltaTime;
         }
         else
         {
             moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-            //transform.position += moveDir * movementSpeed * Time.deltaTime;
-            rb.MovePosition(rb.position + new Vector2(moveDir.x, moveDir.y) * movementSpeed * Time.deltaTime);
+            transform.position += moveDir * movementSpeed * Time.deltaTime;
         }
     }
 
