@@ -1,10 +1,11 @@
 fileFormatVersion: 2
-guid: 395cff32f0b232f4ca2c3b513426c383
+guid: eda7ff5f6e8175c4da119ea9ed256f6d
+timeCreated: 1524393850
+licenseType: Pro
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - FireParticle: {fileID: 8075649317140317937, guid: 94cc4824995f76c44a60febe0e2bc9fc, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
