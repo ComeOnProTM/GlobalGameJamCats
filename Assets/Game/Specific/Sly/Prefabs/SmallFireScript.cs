@@ -21,7 +21,7 @@ public class SmallFireScript : MonoBehaviour
             float randomValue = Random.value;
 
             // Check if the random value is greater than 0.5
-            if (randomValue > 0.5f)
+            if (randomValue > 0.2f)
             {
                 // Your code here (this code will be skipped 50% of the time)
                 yield return new WaitForSeconds(Random.Range(FireTimeA, FireTimeB));
