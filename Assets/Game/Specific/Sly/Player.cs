@@ -55,7 +55,7 @@ public class Player : MonoBehaviour
         transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
 
         // Wait for a short duration for the dash
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3f);
 
         isDashing = false;
     }
