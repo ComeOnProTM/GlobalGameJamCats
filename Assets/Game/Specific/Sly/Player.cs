@@ -5,28 +5,44 @@ using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance;
+
     [SerializeField] private float speed;
     [SerializeField] private float dashSpeed;
     private bool isDashing = false;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Update()
     {
+        if (isDashing)
+        {
+            // Calculate dash direction based on mouse position
+            Vector3 dashDirection = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
+
+            // Move the player in the dash direction with dash speed
+            transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
+        }
+
         // Regular movement based on keyboard input
         Vector2 inputVector = new Vector2(0, 0);
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) && !isDashing)
         {
             inputVector.y = 1;
         }
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) && !isDashing)
         {
             inputVector.x = -1;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) && !isDashing)
         {
             inputVector.y = -1;
         }
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) && !isDashing)
         {
             inputVector.x = 1;
         }
@@ -48,15 +64,14 @@ public class Player : MonoBehaviour
     {
         isDashing = true;
 
-        // Calculate dash direction based on mouse position
-        Vector3 dashDirection = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
-
-        // Move the player in the dash direction with dash speed
-        transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
-
         // Wait for a short duration for the dash
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0.2f);
 
         isDashing = false;
+    }
+
+    public bool IsDashing()
+    {
+        return isDashing;
     }
 }
