@@ -33,20 +33,16 @@ public class SmallFireScript : MonoBehaviour
             }*/
             
 
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+            Collider[] _hitCollidersList = Physics.OverlapSphere(transform.position, radius, layermask);
             // anything with a collider on the fire layer is affected
-            foreach (var hitCollider in hitColliders)
+            for (int i = 0; i < _hitCollidersList.Length; i++)
             {
-                if (!hitCollider.TryGetComponent<SmallFireScript>(out _))
+                if (!_hitCollidersList[i].TryGetComponent<SmallFireScript>(out _) && _hitCollidersList[i].TryGetComponent(out Burnable burnable)
+                    && burnable.Flamability < Random.Range(0f, 1f))
                 {
-                    if (hitCollider.TryGetComponent(out Burnable burnable))
-                    {
-                        if (burnable.Flamability < Random.Range(0f, 1f))
-                        {
-                            SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
-                            spawnedFire.FireParticle = FireParticle;
-                        }
-                    }
+                    SmallFireScript spawnedFire = _hitCollidersList[i].gameObject.AddComponent<SmallFireScript>();
+                    spawnedFire.FireParticle = FireParticle;
+                    continue;
                 }
             }
 
