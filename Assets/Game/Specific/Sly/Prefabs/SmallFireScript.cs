@@ -11,7 +11,7 @@ public class SmallFireScript : MonoBehaviour
     public float FireTimeA = 5;
     private GameObject SpawnedParticle;
     public float FireTimeB = 10;
-    [SerializeField] private float radius = 3f;
+    [SerializeField] private float radius = 0.5f;
     public LayerMask layermask = 1 << 6;
     private IEnumerator Fire()
     {
