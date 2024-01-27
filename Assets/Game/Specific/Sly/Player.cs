@@ -14,7 +14,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashSpeed = 15f;
     private bool isDashing = false;
     private float radius = 1;
-    public LayerMask layermask = 1 << 6;
+    public LayerMask fireLayer;
+    public LayerMask NPCLayer;
 
     [Header("Dash")]
     [SerializeField] private DashState dashState;
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
+            PushNpc();
             moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
             transform.position += moveDir * dashSpeed * Time.deltaTime;
         }
@@ -110,7 +112,7 @@ public class Player : MonoBehaviour
         void Extinguish()
         {
 
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+            var hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
 
             foreach (var hitCollider in hitColliders)
             {
@@ -120,8 +122,27 @@ public class Player : MonoBehaviour
                 }
             }
         }
-    
 
+    private void PushNpc()
+    {
+        //check if dashing x
+        // check collision with NPC
+        var collisionNpc = Physics.OverlapSphere(transform.position, radius, NPCLayer);
+
+        for (int i = 0; i < collisionNpc.Length; i++) 
+        {
+            if (collisionNpc[i].gameObject.TryGetComponent<Pushciv>(out Pushciv _NPC))
+            {
+                Debug.Log("NPC");
+
+            }
+        }
+
+        // npc movement = plauer movement
+
+
+
+    }
 
 }
             
