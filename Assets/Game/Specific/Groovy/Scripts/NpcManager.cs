@@ -52,8 +52,8 @@ public class NpcManager : MonoBehaviour
 
     public void SuccesfulSaveNPC()
     {
-        OnNpcSaved?.Invoke(this, EventArgs.Empty);
         npcSaved += 1;
+        OnNpcSaved?.Invoke(this, EventArgs.Empty);
     }
 
     public float GetTotalNPC()

@@ -37,7 +37,8 @@ public class PlayerUI : MonoBehaviour
 
     private void NpcManager_OnNpcSaved(object sender, System.EventArgs e)
     {
-        TimerText.text = NpcManager.Instance.GetSavedNPC().ToString() + "/" + npcTotal.ToString();
+        Debug.Log(NpcManager.Instance.GetSavedNPC().ToString());
+        CivCountText.text = NpcManager.Instance.GetSavedNPC().ToString() + "/" + npcTotal.ToString();
     }
 
     void Update()

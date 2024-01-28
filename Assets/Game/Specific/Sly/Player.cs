@@ -304,6 +304,11 @@ public class Player : MonoBehaviour
                 healthSpeedModifier = healSpeedModifier;
             }
         }
+
+        if (currentHealth <= 0)
+        {
+            GameManager.Instance.FinishGame(GameManager.EndCondition.TimerFail);
+        }
     }
 
     void Extinguish()
