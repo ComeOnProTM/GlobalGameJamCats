@@ -8,47 +8,69 @@ using Debug = UnityEngine.Debug;
 public class SmallFireScript : MonoBehaviour
 {
     [SerializeField] private GameObject FireParticle;
-    public float FireTimeA = 5;
+    public float FireTimeA = 0.5f;
     private GameObject SpawnedParticle;
-    public float FireTimeB = 10;
-    [SerializeField] private float radius = 2.5f;
+    public float FireTimeB = 1.5f;
+    [SerializeField] private float radius = 3f;
     public LayerMask layermask = 1 << 6;
     private IEnumerator Fire()
     {
         Debug.Log("Entered Fire Coroutine");
 
-        while (true)
-        {
-            /*float randomValue = Random.value;
+        //while (true)
+        //{
+        float randomValue = Random.value;
 
-            // Check if the random value is greater than 0.5
-            if (randomValue > 0.2f)
+        // Check if the random value is greater than 0.5
+        if (randomValue > 0.2f)
+        {
+            // Your code here (this code will be skipped 50% of the time)
+            yield return new WaitForSeconds(Random.Range(FireTimeA, FireTimeB));
+        }
+        else
+        {
+            // This block will be executed when the random value is less than or equal to 0.5
+            Debug.Log("This line of code is skipped.");
+        }
+
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+        List<Collider> hitCollidersList = new List<Collider>();
+        foreach (Collider _collider in hitColliders)
+        {
+            hitCollidersList.Add(_collider);
+        }
+        // anything with a collider on the fire layer is affected
+
+        for (int i = 0; i < hitCollidersList.Count; i++)
+        {
+            Collider randomCollider = hitColliders[Random.Range(0, hitColliders.Length)];
+            if (!randomCollider.TryGetComponent<SmallFireScript>(out SmallFireScript _))
             {
-                // Your code here (this code will be skipped 50% of the time)
-                yield return new WaitForSeconds(Random.Range(FireTimeA, FireTimeB));
+                SmallFireScript spawnedFire = randomCollider.gameObject.AddComponent<SmallFireScript>();
+                spawnedFire.FireParticle = FireParticle;
+                break;
             }
             else
             {
-                // This block will be executed when the random value is less than or equal to 0.5
-                Debug.Log("This line of code is skipped.");
-            }*/
+                hitCollidersList.Remove(randomCollider);
+            }
+        }
+        
 
+        /*foreach (Collider hitCollider in hitColliders)
+        {
 
-            var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-            // anything with a collider on the fire layer is affected
-            foreach (var hitCollider in hitColliders)
+            if (!hitCollider.TryGetComponent<SmallFireScript>(out _) && hitCollider.TryGetComponent(out Burnable burnable) && burnable.Flamability < Random.Range(0f, 1f))
             {
 
-                if (!hitCollider.TryGetComponent<SmallFireScript>(out _) && hitCollider.TryGetComponent(out Burnable burnable)  && burnable.Flamability < Random.Range(0f, 1f))
-                {
-                    SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
-                    spawnedFire.FireParticle = FireParticle;
-                    continue;
-                }
+                SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
+                spawnedFire.FireParticle = FireParticle;
+                continue;
             }
-
-            Debug.Log("Loop", context: this);
-        }
+        }*/
+        Debug.Log("Loop", context: this);
+        //}
     }
 
     private void OnDestroy()
