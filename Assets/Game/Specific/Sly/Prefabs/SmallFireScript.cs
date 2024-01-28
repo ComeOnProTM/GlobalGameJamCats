@@ -11,7 +11,7 @@ public class SmallFireScript : MonoBehaviour
     public float FireTimeA = 5;
     private GameObject SpawnedParticle;
     public float FireTimeB = 10;
-    [SerializeField] private float radius = 3f;
+    [SerializeField] private float radius = 2.5f;
     public LayerMask layermask = 1 << 6;
     private IEnumerator Fire()
     {
@@ -19,7 +19,7 @@ public class SmallFireScript : MonoBehaviour
 
         while (true)
         {
-            float randomValue = Random.value;
+            /*float randomValue = Random.value;
 
             // Check if the random value is greater than 0.5
             if (randomValue > 0.2f)
@@ -31,7 +31,7 @@ public class SmallFireScript : MonoBehaviour
             {
                 // This block will be executed when the random value is less than or equal to 0.5
                 Debug.Log("This line of code is skipped.");
-            }
+            }*/
 
 
             var hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
@@ -39,17 +39,11 @@ public class SmallFireScript : MonoBehaviour
             foreach (var hitCollider in hitColliders)
             {
 
-                if (!hitCollider.TryGetComponent<SmallFireScript>(out _))
+                if (!hitCollider.TryGetComponent<SmallFireScript>(out _) && hitCollider.TryGetComponent(out Burnable burnable)  && burnable.Flamability < Random.Range(0f, 1f))
                 {
-                    if (hitCollider.TryGetComponent(out Burnable burnable))
-                    {
-
-                        if (burnable.Flamability < Random.Range(0f, 1f))
-                        {
-                            SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
-                            spawnedFire.FireParticle = FireParticle;
-                        }
-                    }
+                    SmallFireScript spawnedFire = hitCollider.gameObject.AddComponent<SmallFireScript>();
+                    spawnedFire.FireParticle = FireParticle;
+                    continue;
                 }
             }
 

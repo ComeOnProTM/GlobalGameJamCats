@@ -14,6 +14,8 @@ public class PlayerVisual : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private GameObject waterParticles;
+    [SerializeField] private Transform waterTransform;
 
     private Direction direction;
 
@@ -28,42 +30,74 @@ public class PlayerVisual : MonoBehaviour
     private void Start()
     {
         Player.Instance.OnDashStateChanged += Player_OnDashStateChanged;
+        Player.Instance.OnSmallDashStateChanged += Player_OnSmallDashStateChanged;
         InputManager.Instance.OnPlayerStateChanged += InputManager_OnPlayerStateChanged;
+    }
+
+    private void Player_OnSmallDashStateChanged(object sender, Player.OnSmallDashStateChangedEventArgs e)
+    {
+        Debug.Log(e.eventSmallDashState);
+        switch (e.eventSmallDashState)
+        {
+            case Player.SmallDashState.SmallReady:
+                anim.SetBool(PUNCH, false);
+                break;
+            case Player.SmallDashState.SmallDashing:
+                anim.SetBool(PUNCH, true);
+                Debug.Log("WaterSpawn");
+                Instantiate(waterParticles, waterTransform);
+                break;
+            case Player.SmallDashState.SmallCooldown:
+                anim.SetBool(PUNCH, false);
+                break;
+        }
     }
 
     private void InputManager_OnPlayerStateChanged(object sender, InputManager.OnPlayerStateChangedEventArgs e)
     {
-        Debug.Log(e.eventPlayerState);
         switch (e.eventPlayerState)
         {
             case Player.PlayerState.Idle:
-                anim.SetBool(IDLE, true);
-                anim.SetBool(WALK, false);
+                if (!Player.Instance.GetIsDashing())
+                {
+                    anim.SetBool(IDLE, true);
+                    anim.SetBool(WALK, false);
+                }
                 break;
             case Player.PlayerState.Up:
-                anim.SetBool(WALK, true);
-                anim.SetBool(IDLE, false);
+                if (!Player.Instance.GetIsDashing())
+                {
+                    anim.SetBool(IDLE, false);
+                    anim.SetBool(WALK, true);
+                }
                 direction = Direction.Up;
                 break;
             case Player.PlayerState.Down:
-                anim.SetBool(WALK, true);
-                anim.SetBool(IDLE, false);
+                if (!Player.Instance.GetIsDashing())
+                {
+                    anim.SetBool(IDLE, false);
+                    anim.SetBool(WALK, true);
+                }
                 direction = Direction.Down;
                 break;
             case Player.PlayerState.Left:
-                anim.SetBool(WALK, true);
-                anim.SetBool(IDLE, false);
+                if (!Player.Instance.GetIsDashing())
+                {
+                    anim.SetBool(IDLE, false);
+                    anim.SetBool(WALK, true);
+                }
                 direction = Direction.Left;
                 spriteRenderer.flipX = true;
                 break;
             case Player.PlayerState.Right:
-                anim.SetBool(WALK, true);
-                anim.SetBool(IDLE, false);
+                if (!Player.Instance.GetIsDashing())
+                {
+                    anim.SetBool(IDLE, false);
+                    anim.SetBool(WALK, true);
+                }
                 direction = Direction.Right;
                 break;
         }
-
-        
 
         if (e.eventPlayerState != Player.PlayerState.Idle)
         {
@@ -77,22 +111,23 @@ public class PlayerVisual : MonoBehaviour
                     anim.SetBool(FRONT, false);
                     anim.SetBool(BACK, true);
                     anim.SetBool(SIDE, false);
-                    break;
+                break;
                 case Direction.Down:
                     anim.SetBool(BACK, false);
                     anim.SetBool(FRONT, true);
                     anim.SetBool(SIDE, false);
-                    break;
+                break;
                 case Direction.Left:
                     anim.SetBool(SIDE, true);
                     anim.SetBool(BACK, false);
                     anim.SetBool(FRONT, false);
+                    spriteRenderer.flipX = true;
                     break;
                 case Direction.Right:
                     anim.SetBool(SIDE, true);
                     anim.SetBool(BACK, false);
                     anim.SetBool(FRONT, false);
-                    break;
+                break;
             }
         }
     }
@@ -101,7 +136,15 @@ public class PlayerVisual : MonoBehaviour
     {
         switch (e.eventDashState)
         {
-
+            case Player.DashState.Ready:
+                anim.SetBool(PUNCH, false);
+                break;
+            case Player.DashState.Dashing:
+                anim.SetBool(PUNCH, true);
+            break;
+            case Player.DashState.Cooldown:
+                anim.SetBool(PUNCH, false);
+                break;
         }
     }
 }

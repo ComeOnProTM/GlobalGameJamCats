@@ -13,9 +13,14 @@ public class Player : MonoBehaviour
     public static Player Instance;
 
     public event EventHandler<OnDashStateChangedEventArgs> OnDashStateChanged;
+    public event EventHandler<OnSmallDashStateChangedEventArgs> OnSmallDashStateChanged;
     public class OnDashStateChangedEventArgs : EventArgs
     {
         public DashState eventDashState;
+    }
+    public class OnSmallDashStateChangedEventArgs : EventArgs
+    {
+        public SmallDashState eventSmallDashState;
     }
 
     [Header("References")]
@@ -104,9 +109,9 @@ public class Player : MonoBehaviour
             savedVelocity = InputManager.Instance.GetMovementVectorNormalized();
             //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
             smallDashState = SmallDashState.SmallDashing;
-            OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+            OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
             {
-                eventDashState = dashState,
+                eventSmallDashState = smallDashState,
             });
         }
     }
@@ -146,9 +151,9 @@ public class Player : MonoBehaviour
                     //dashTimer = maxDash;
                     //rb.velocity = savedVelocity;
                     dashState = DashState.Cooldown;
-                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
                     {
-                        eventDashState = dashState,
+                        eventSmallDashState = smallDashState,
                     });
                 }
             break;
@@ -159,9 +164,9 @@ public class Player : MonoBehaviour
                 {
                     dashTimer = 0;
                     dashState = DashState.Ready;
-                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
                     {
-                        eventDashState = dashState,
+                        eventSmallDashState = smallDashState,
                     });
                 }
             break;
