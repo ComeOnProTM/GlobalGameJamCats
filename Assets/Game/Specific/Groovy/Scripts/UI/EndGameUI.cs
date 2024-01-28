@@ -9,6 +9,7 @@ public class EndGameUI : MonoBehaviour
     //FIRE OUT IS GENERIC END NOW, GOD HELP US
     [SerializeField] private GameObject fireOutEndGameUI;
     [SerializeField] private GameObject timerOutEndGameUI;
+    [SerializeField] private GameObject civSavedEndGameUI;
 
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Text timeText;
@@ -29,6 +30,9 @@ public class EndGameUI : MonoBehaviour
                 case GameManager.EndCondition.FireOut:
                     ShowFireOut();
                     break;
+                case GameManager.EndCondition.CivSaved:
+                    ShowCivSaved();
+                    break;
                 case GameManager.EndCondition.TimerFail:
                     ShowTimerOut();
                     break;
@@ -43,11 +47,23 @@ public class EndGameUI : MonoBehaviour
     private void ShowFireOut()
     {
         finalTime = playerUI.maxTime - playerUI.timeRemaining;
+        timeText.gameObject.SetActive(true);
         //timeText.text = finalTime.ToString("0");
         float minutes = Mathf.FloorToInt(finalTime / 60);
         float seconds = Mathf.FloorToInt(finalTime % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         fireOutEndGameUI.SetActive(true);
+    }
+
+    private void ShowCivSaved()
+    {
+        finalTime = playerUI.maxTime - playerUI.timeRemaining;
+        timeText.gameObject.SetActive(true);
+        //timeText.text = finalTime.ToString("0");
+        float minutes = Mathf.FloorToInt(finalTime / 60);
+        float seconds = Mathf.FloorToInt(finalTime % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        civSavedEndGameUI.SetActive(true);
     }
 
     private void ShowTimerOut()
