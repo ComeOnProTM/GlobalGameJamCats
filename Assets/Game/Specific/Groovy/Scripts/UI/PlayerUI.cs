@@ -31,8 +31,11 @@ public class PlayerUI : MonoBehaviour
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
     {
-        npcTotal = NpcManager.Instance.GetTotalNPC();
-        CivCountText.text = "0/" + npcTotal.ToString(); ;
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            npcTotal = NpcManager.Instance.GetTotalNPC();
+            CivCountText.text = "0/" + npcTotal.ToString();
+        }
     }
 
     private void NpcManager_OnNpcSaved(object sender, System.EventArgs e)
