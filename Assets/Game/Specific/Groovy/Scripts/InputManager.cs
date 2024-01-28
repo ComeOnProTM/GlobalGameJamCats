@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
 
     public event EventHandler OnInteractAction;
     public event EventHandler OnAlternateInteractAction;
+    public event EventHandler OnPauseAction;
     public event EventHandler<OnPlayerStateChangedEventArgs> OnPlayerStateChanged;
     public class OnPlayerStateChangedEventArgs : EventArgs
     {
@@ -27,6 +28,12 @@ public class InputManager : MonoBehaviour
 
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.AlternateInteract.performed += AlternateInteract_performed;
+        playerInputActions.Player.Pause.performed += Pause_performed;
+    }
+
+    private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnPauseAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void AlternateInteract_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
