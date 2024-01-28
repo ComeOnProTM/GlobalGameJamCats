@@ -6,40 +6,47 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
+using static Player;
 
 public class Player : MonoBehaviour
 {
     public static Player Instance;
 
-    public event EventHandler<OnPlayerStateChangedEventArgs> OnPlayerStateChanged;
     public event EventHandler<OnDashStateChangedEventArgs> OnDashStateChanged;
-    public class OnPlayerStateChangedEventArgs : EventArgs
-    {
-        public PlayerState eventPlayerState;
-    }
     public class OnDashStateChangedEventArgs : EventArgs
     {
         public DashState eventDashState;
     }
 
-    [SerializeField]
-    private Rigidbody2D rb;
+    [Header("References")]
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private Rigidbody2D rb;
 
     [Header("Movement")]
     [SerializeField] private PlayerState playerState;
     [SerializeField] private float movementSpeed;
-    [SerializeField] private float dashSpeed = 15f;
     private bool isDashing = false;
+    private bool isSmallDashing = false;
+    private bool isWalking = false;
     private float radius = 1;
-    public LayerMask fireLayer;
-    public LayerMask NPCLayer;
+    [SerializeField] private LayerMask fireLayer;
+    [SerializeField] private LayerMask NPCLayer;
+
 
     [Header("Dash")]
     [SerializeField] private DashState dashState;
+    [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashMaxTime = 0.8f;
     [SerializeField] private float dashCooldown = 2f;
     private float dashTimer;
     private Vector2 savedVelocity;
+
+    [Header("SmallDash")]
+    [SerializeField] private SmallDashState smallDashState;
+    [SerializeField] private float smallDashSpeed = 15f;
+    [SerializeField] private float smallDashMaxTime = 0.8f;
+    [SerializeField] private float smallDashCooldown = 2f;
+    private float smallDashTimer;
 
     [SerializeField] private int healthBackingField = 20;
     public int Health 
@@ -57,6 +64,7 @@ public class Player : MonoBehaviour
 
     public enum PlayerState
     {
+        Idle,
         Up,
         Down,
         Left,
@@ -70,73 +78,66 @@ public class Player : MonoBehaviour
         Cooldown,
     }
 
+    public enum SmallDashState
+    {
+        SmallReady,
+        SmallDashing,
+        SmallCooldown,
+    }
+
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
+        InputManager.Instance.OnAlternateInteractAction += InputManager_OnAlternateInteractAction;
+    }
+
+    private void InputManager_OnAlternateInteractAction(object sender, EventArgs e)
+    {
+        Debug.Log("Small Fire");
+        if (smallDashState == SmallDashState.SmallReady)
+        {
+            savedVelocity = InputManager.Instance.GetMovementVectorNormalized();
+            //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
+            smallDashState = SmallDashState.SmallDashing;
+            OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+            {
+                eventDashState = dashState,
+            });
+        }
+    }
+
+    private void InputManager_OnInteractAction(object sender, EventArgs e)
+    {
+        if (dashState == DashState.Ready)
+        {
+            savedVelocity = InputManager.Instance.GetMovementVectorNormalized();
+            //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
+            dashState = DashState.Dashing;
+            OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+            {
+                eventDashState = dashState,
+            });
+        }
+    }
+
     void Update()
     {
+        Vector2 inputVector = inputManager.GetMovementVectorNormalized();
 
-        // Regular movement based on keyboard input
-        Vector2 inputVector = new Vector2(0, 0);
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            inputVector.y = 1;
-            playerState = PlayerState.Up;
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
-            {
-                eventPlayerState = playerState,
-            });
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            inputVector.x = -1;
-            playerState = PlayerState.Left;
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
-            {
-                eventPlayerState = playerState,
-            });
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            inputVector.y = -1;
-            playerState = PlayerState.Down;
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
-            {
-                eventPlayerState = playerState,
-            });
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            inputVector.x = 1;
-            playerState = PlayerState.Right;
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
-            {
-                eventPlayerState = playerState,
-            });
-        }
-        
-        inputVector = inputVector.normalized;
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
         transform.position += moveDir * movementSpeed * Time.deltaTime;
+
+        isWalking = moveDir != Vector3.zero;
 
         switch (dashState)
         {
             case DashState.Ready:
-                var isDashKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-                if (isDashKeyDown /*&& inputVector.x != 0 && inputVector.y != 0*/)
-                {
-                    savedVelocity = inputVector;
-                    //rb.velocity = new Vector2(inputVector.x * 3f * Time.deltaTime, inputVector.y * 3f * Time.deltaTime);
-                    dashState = DashState.Dashing;
-                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
-                    {
-                        eventDashState = dashState,
-                    });
-                }
-            break;
+                break;
             case DashState.Dashing:
                 dashTimer += Time.deltaTime;
                 isDashing = true;
@@ -166,12 +167,59 @@ public class Player : MonoBehaviour
             break;
         }
 
+        switch (smallDashState)
+        {
+            case SmallDashState.SmallReady:
+                break;
+            case SmallDashState.SmallDashing:
+                smallDashTimer += Time.deltaTime;
+                isSmallDashing = true;
+                if (smallDashTimer >= smallDashMaxTime)
+                {
+                    //dashTimer = maxDash;
+                    //rb.velocity = savedVelocity;
+                    smallDashState = SmallDashState.SmallCooldown;
+                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    {
+                        eventDashState = dashState,
+                    });
+                }
+                break;
+            case SmallDashState.SmallCooldown:
+                smallDashTimer += Time.deltaTime;
+                isSmallDashing = false;
+                if (smallDashTimer >= smallDashCooldown)
+                {
+                    smallDashTimer = 0;
+                    smallDashState = SmallDashState.SmallReady;
+                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                    {
+                        eventDashState = dashState,
+                    });
+                }
+                break;
+        }
+
         if (isDashing)
         {
             // Move the player in the dash direction with dash speed
             Extinguish();
             PushNpc();
             moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            MovePlayer(moveDir, dashSpeed);
+
+            // transform.position += moveDir * dashSpeed * Time.deltaTime;
+            //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
+            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+            transform.position += moveDir * dashSpeed * Time.deltaTime;
+        }
+        if (isSmallDashing)
+        {
+            // Move the player in the dash direction with dash speed
+            Extinguish();
+            PushNpc();
+            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+            MovePlayer(moveDir, smallDashSpeed);
 
             // transform.position += moveDir * dashSpeed * Time.deltaTime;
             //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
@@ -180,7 +228,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            transform.position += moveDir * movementSpeed * Time.deltaTime;
+            MovePlayer(moveDir, movementSpeed);
         }
     }
 
@@ -214,6 +262,11 @@ public class Player : MonoBehaviour
         }
 
         // npc movement = plauer movement
+    }
+
+    public void MovePlayer(Vector3 _moveDir, float _speed)
+    {
+        transform.position += _moveDir * _speed * Time.deltaTime;
     }
 
     public PlayerState GetPlayerState()
