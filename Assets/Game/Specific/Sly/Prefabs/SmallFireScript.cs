@@ -34,17 +34,17 @@ public class SmallFireScript : MonoBehaviour
         }
 
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
-        List<Collider> hitCollidersList = new List<Collider>();
-        foreach (Collider _collider in hitColliders)
+        Collider[] _hitColliders = Physics.OverlapSphere(transform.position, radius, layermask);
+        List<Collider> _hitCollidersList = new List<Collider>();
+        foreach (Collider _collider in _hitColliders)
         {
-            hitCollidersList.Add(_collider);
+            _hitCollidersList.Add(_collider);
         }
         // anything with a collider on the fire layer is affected
 
-        for (int i = 0; i < hitCollidersList.Count; i++)
+        for (int i = 0; i < _hitCollidersList.Count; i++)
         {
-            Collider randomCollider = hitColliders[Random.Range(0, hitColliders.Length)];
+            Collider randomCollider = _hitColliders[Random.Range(0, _hitColliders.Length)];
             if (!randomCollider.TryGetComponent<SmallFireScript>(out SmallFireScript _))
             {
                 SmallFireScript spawnedFire = randomCollider.gameObject.AddComponent<SmallFireScript>();
@@ -53,7 +53,7 @@ public class SmallFireScript : MonoBehaviour
             }
             else
             {
-                hitCollidersList.Remove(randomCollider);
+                _hitCollidersList.Remove(randomCollider);
             }
         }
         
