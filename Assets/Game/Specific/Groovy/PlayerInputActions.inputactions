@@ -44,7 +44,7 @@
                 {
                     "name": "Select",
                     "type": "Button",
-                    "id": "efa4e9a8-f048-4649-9ef0-82a139824900",
+                    "id": "54ce04b2-054f-4379-9238-c34fcde214c6",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -362,8 +362,8 @@
                 },
                 {
                     "name": "",
-                    "id": "6d4757fc-190b-4fa8-aac6-3bd1abcb0dfe",
-                    "path": "<Keyboard>/e",
+                    "id": "7c8dfc7a-16f5-47be-b3e3-730b0179e01a",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -373,8 +373,8 @@
                 },
                 {
                     "name": "",
-                    "id": "1a9c8139-1cc4-4ae8-ac0b-6e182d7277e3",
-                    "path": "<Gamepad>/buttonSouth",
+                    "id": "de33a7d0-2149-4b93-9b55-cf856a948549",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
