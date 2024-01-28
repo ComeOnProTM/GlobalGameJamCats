@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using static Player;
 using Unity.Profiling;
