@@ -116,7 +116,7 @@ Transform:
   m_GameObject: {fileID: 3624637678756724225}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0105752945, y: 0.1375122, z: -20}
+  m_LocalPosition: {x: -0.0044431686, y: 0.05777836, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -157,7 +157,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.14
+  orthographic size: 3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -364,7 +364,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -388,11 +388,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b13f27ac100a342b834bb0d7427e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
   rb: {fileID: 9165750067405391963}
-  dashSpeed: 94
+  playerState: 0
+  movementSpeed: 5
+  dashSpeed: 16
+  fireLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  NPCLayer:
+    serializedVersion: 2
+    m_Bits: 128
   dashState: 0
-  dashMaxTime: 0.2
+  dashMaxTime: 0.3
+  dashCooldown: 0.75
+  healthBackingField: 20
+  maxHealth: 0
 --- !u!1 &7050008528048442149
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,7 +429,7 @@ Transform:
   m_GameObject: {fileID: 7050008528048442149}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0105752945, y: 0.1375122, z: -20}
+  m_LocalPosition: {x: -0.0044431686, y: 0.05777836, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -448,7 +458,7 @@ MonoBehaviour:
   m_Follow: {fileID: 6899851638966177196}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 7.14
+    OrthographicSize: 3
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
