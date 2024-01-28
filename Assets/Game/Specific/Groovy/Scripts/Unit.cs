@@ -67,6 +67,7 @@ public class Unit : MonoBehaviour
                     healthBar.AdjustHealth(-1);
                     damageTick = true;
                     healthSpeedModifier = damageSpeedModifier;
+                    break;
                 }
             }
         }
