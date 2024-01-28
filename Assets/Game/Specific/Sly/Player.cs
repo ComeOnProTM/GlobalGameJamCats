@@ -256,17 +256,17 @@ public class Player : MonoBehaviour
     {
         //check if dashing x
         // check collision with NPC
-        var collisionNpc = Physics.OverlapSphere(transform.position, radius, NPCLayer);
+        Collider2D[] collisionNpc = Physics2D.OverlapCircleAll(transform.position, radius, NPCLayer);
 
         for (int i = 0; i < collisionNpc.Length; i++) 
         {
-            if (collisionNpc[i].gameObject.TryGetComponent<Pushciv>(out Pushciv _NPC))
+            if (collisionNpc[i].gameObject.TryGetComponent<Civilian>(out Civilian _NPC))
             {
                 Debug.Log("NPC");
             }
         }
 
-        // npc movement = plauer movement
+        // npc movement = player movement
     }
 
     public void MovePlayer(Vector3 _moveDir, float _speed)
