@@ -12,11 +12,13 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private Text CivCountText;
     [SerializeField] private Text TimerText;
     private float npcTotal;
-    public float timeRemaining = 10;
+    public float maxTime = 180;
+    public float timeRemaining = 180;
     public bool timerIsRunning = false;
     
     private void Start()
     {
+        timeRemaining = maxTime;
         DisplayTime(timeRemaining - 1f);
         npcTotal = NpcManager.Instance.GetTotalNPC();
         string _tempString = "0/" + npcTotal.ToString();

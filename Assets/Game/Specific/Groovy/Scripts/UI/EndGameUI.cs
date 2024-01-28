@@ -1,30 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using TMPro;
 
 public class EndGameUI : MonoBehaviour
-
-    
 {
-    private const string LEVELONE = "CasinoScene";
+    //FIRE OUT IS GENERIC END NOW, GOD HELP US
     [SerializeField] private GameObject fireOutEndGameUI;
-    [SerializeField] private GameObject civSavedEndGameUI;
     [SerializeField] private GameObject timerOutEndGameUI;
 
-    [Header("References")]
-    [SerializeField] private Button playButton;
-    [SerializeField] private Button quitButton;
+    [SerializeField] private PlayerUI playerUI;
+    [SerializeField] private Text timeText;
+    [SerializeField] private float finalTime;
 
     private void Start()
     {
         Hide();
         GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
-        playButton.onClick.AddListener(() => SceneManager.LoadScene(LEVELONE));
-        quitButton.onClick.AddListener(() => Application.Quit());
-        playButton.Select();
     }
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
@@ -35,9 +28,6 @@ public class EndGameUI : MonoBehaviour
             {
                 case GameManager.EndCondition.FireOut:
                     ShowFireOut();
-                    break;
-                case GameManager.EndCondition.CivSaved:
-                    ShowCivSaved();
                     break;
                 case GameManager.EndCondition.TimerFail:
                     ShowTimerOut();
@@ -52,23 +42,23 @@ public class EndGameUI : MonoBehaviour
 
     private void ShowFireOut()
     {
+        finalTime = playerUI.maxTime - playerUI.timeRemaining;
+        //timeText.text = finalTime.ToString("0");
+        float minutes = Mathf.FloorToInt(finalTime / 60);
+        float seconds = Mathf.FloorToInt(finalTime % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         fireOutEndGameUI.SetActive(true);
-    }
-
-    private void ShowCivSaved()
-    {
-        civSavedEndGameUI.SetActive(true);
     }
 
     private void ShowTimerOut()
     {
+        
         timerOutEndGameUI.SetActive(true);
     }
 
     private void Hide()
     {
         fireOutEndGameUI.SetActive(false);
-        civSavedEndGameUI.SetActive(false);
         timerOutEndGameUI.SetActive(false);
     }
 }
