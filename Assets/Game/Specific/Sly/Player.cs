@@ -8,11 +8,12 @@ using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using static Player;
 using Unity.Profiling;
+using UnityEngine.Animations;
 
 public class Player : MonoBehaviour
 {
     public static Player Instance;
-
+    
     public event EventHandler<OnDashStateChangedEventArgs> OnDashStateChanged;
     public event EventHandler<OnSmallDashStateChangedEventArgs> OnSmallDashStateChanged;
     public class OnDashStateChangedEventArgs : EventArgs
@@ -64,6 +65,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float damageSpeedModifier = 1f;
     [SerializeField] private float healSpeedModifier = 3f;
     private float currentHealth;
+
+    private GameObject HeldCivilian;
 
     public int Health 
     {
@@ -159,10 +162,17 @@ public class Player : MonoBehaviour
                 case DashState.Ready:
                     break;
                 case DashState.Dashing:
+                    PushNpc();
                     dashTimer += Time.deltaTime;
                     isDashing = true;
                     if (dashTimer >= dashMaxTime)
                     {
+                        if (HeldCivilian != null)
+                        {
+                            HeldCivilian.transform.parent = null;
+                            HeldCivilian.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+                            HeldCivilian = null;
+                        }
                         //dashTimer = maxDash;
                         //rb.velocity = savedVelocity;
                         dashState = DashState.Cooldown;
@@ -224,7 +234,7 @@ public class Player : MonoBehaviour
             {
                 // Move the player in the dash direction with dash speed
                 Extinguish();
-                PushNpc();
+                //PushNpc();
                 moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
                 MovePlayer(moveDir, dashSpeed);
 
@@ -237,7 +247,7 @@ public class Player : MonoBehaviour
             {
                 // Move the player in the dash direction with dash speed
                 Extinguish();
-                PushNpc();
+                //PushNpc();
                 moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
                 MovePlayer(moveDir, smallDashSpeed);
 
@@ -311,15 +321,26 @@ public class Player : MonoBehaviour
 
     private void PushNpc()
     {
+
         //check if dashing x
         // check collision with NPC
-        Collider2D[] collisionNpc = Physics2D.OverlapCircleAll(transform.position, radius, NPCLayer);
+        // at start of dash make sure that we check the held civilian state, then make a decision which of the 2 codes to execute
 
-        for (int i = 0; i < collisionNpc.Length; i++) 
+        if (HeldCivilian == null)
         {
-            if (collisionNpc[i].gameObject.TryGetComponent<Civilian>(out Civilian _NPC))
+            Collider2D[] collisionNpc = Physics2D.OverlapCircleAll(transform.position, radius, NPCLayer);
+
+            for (int i = 0; i < collisionNpc.Length; i++)
             {
-                Debug.Log("NPC");
+                if (collisionNpc[i].gameObject.TryGetComponent<Civilian>(out Civilian _NPC))
+                {
+                    Debug.Log("NPC");
+                    HeldCivilian = _NPC.gameObject;
+                    _NPC.transform.parent = transform;
+                    HeldCivilian.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+
+
+                }
             }
         }
 
