@@ -4219,11 +4219,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6910327279588063480, guid: 1368eb449b61b7a4e88677e743b20938, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 446342082}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2157108283139649703, guid: 1368eb449b61b7a4e88677e743b20938, type: 3}
       insertIndex: -1
       addedObject: {fileID: 794224885}
+    - targetCorrespondingSourceObject: {fileID: 2157108283139649703, guid: 1368eb449b61b7a4e88677e743b20938, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 794224890}
   m_SourcePrefab: {fileID: 100100000, guid: 1368eb449b61b7a4e88677e743b20938, type: 3}
 --- !u!1 &304207030
 GameObject:
@@ -5966,16 +5972,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446342081}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 933170446}
-  m_Father: {fileID: 677696912}
+  m_Father: {fileID: 794224889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -0.322}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &446342083
@@ -62110,7 +62116,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2143315871}
-  - {fileID: 446342082}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &682404576
@@ -63501,6 +63506,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1337e042bb9aff4499afd141c5a0bd58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &794224889 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6910327279588063480, guid: 1368eb449b61b7a4e88677e743b20938, type: 3}
+  m_PrefabInstance: {fileID: 302559544}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &794224890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794224884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7f489e34d4d474983ee303de8474ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 1
+  fireLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  healthBackingField: 20
+  damageTimerMax: 2
+  healthBar: {fileID: 933170445}
+  maxHealth: 6
+  damageSpeedModifier: 1
+  healSpeedModifier: 3
 --- !u!114 &796331776
 MonoBehaviour:
   m_ObjectHideFlags: 0
