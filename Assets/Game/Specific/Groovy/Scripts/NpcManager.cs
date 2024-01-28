@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class NpcManager : MonoBehaviour
 {
     public static NpcManager Instance;
+
+    public event EventHandler OnNpcSaved;
     
     private List<GameObject> npcList;
     private float waitTimer;
@@ -33,7 +36,7 @@ public class NpcManager : MonoBehaviour
         }
         if (GameManager.Instance.IsGamePlaying() && npcList.Count == 0 && canCheckNPC)
         {
-            GameManager.Instance.SetState(GameManager.GameState.GameEnd);
+            GameManager.Instance.FinishGame(GameManager.EndCondition.CivSaved);
         }
     }
 
@@ -49,6 +52,17 @@ public class NpcManager : MonoBehaviour
 
     public void SuccesfulSaveNPC()
     {
+        OnNpcSaved?.Invoke(this, EventArgs.Empty);
         npcSaved += 1;
+    }
+
+    public float GetTotalNPC()
+    {
+        return npcList.Count;
+    }
+
+    public float GetSavedNPC()
+    {
+        return npcSaved;
     }
 }

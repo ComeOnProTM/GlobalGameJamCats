@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class EndGameUI : MonoBehaviour
 {
-    [SerializeField] private GameObject endGameUI;
+    [SerializeField] private GameObject fireOutEndGameUI;
+    [SerializeField] private GameObject civSavedEndGameUI;
+    [SerializeField] private GameObject timerOutEndGameUI;
 
     private void Start()
     {
+        Hide();
         GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
     }
 
@@ -16,7 +19,18 @@ public class EndGameUI : MonoBehaviour
     {
         if (GameManager.Instance.IsGameEnd())
         {
-            Show();
+            switch (GameManager.Instance.GetEndCondition())
+            {
+                case GameManager.EndCondition.FireOut:
+                    ShowFireOut();
+                    break;
+                case GameManager.EndCondition.CivSaved:
+                    ShowCivSaved();
+                    break;
+                case GameManager.EndCondition.TimerFail:
+                    ShowTimerOut();
+                    break;
+            }
         }
         else
         {
@@ -24,13 +38,25 @@ public class EndGameUI : MonoBehaviour
         }
     }
 
-    private void Show()
+    private void ShowFireOut()
     {
-        endGameUI.SetActive(true);
+        fireOutEndGameUI.SetActive(true);
+    }
+
+    private void ShowCivSaved()
+    {
+        civSavedEndGameUI.SetActive(true);
+    }
+
+    private void ShowTimerOut()
+    {
+        timerOutEndGameUI.SetActive(true);
     }
 
     private void Hide()
     {
-        endGameUI.SetActive(false);
+        fireOutEndGameUI.SetActive(false);
+        civSavedEndGameUI.SetActive(false);
+        timerOutEndGameUI.SetActive(false);
     }
 }

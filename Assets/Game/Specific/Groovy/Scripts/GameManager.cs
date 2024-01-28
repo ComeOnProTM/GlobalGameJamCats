@@ -18,8 +18,16 @@ public class GameManager : MonoBehaviour
         GameEnd,
     }
 
+    public enum EndCondition
+    {
+        FireOut,
+        CivSaved,
+        TimerFail,
+    }
+
     [Header("Attributes")]
     [SerializeField] private GameState gameState;
+    private EndCondition endCondition;
 
     private float timerStart;
     private float timerStartMax = 3f;
@@ -56,9 +64,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetState(GameState _gameState)
+    public void FinishGame(EndCondition _endCondition)
     {
-        gameState = _gameState;
+        gameState = GameState.GameEnd;
+        endCondition = _endCondition;
         OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -80,5 +89,10 @@ public class GameManager : MonoBehaviour
     public float GetStartTimer()
     {
         return timerStart;
+    }
+
+    public EndCondition GetEndCondition()
+    {
+        return endCondition;
     }
 }
