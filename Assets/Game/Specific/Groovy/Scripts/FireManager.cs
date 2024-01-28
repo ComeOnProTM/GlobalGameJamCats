@@ -31,7 +31,7 @@ public class FireManager : MonoBehaviour
         }
         if (GameManager.Instance.IsGamePlaying() && fireList.Count == 0 && canCheckFire)
         {
-            GameManager.Instance.SetState(GameManager.GameState.GameEnd);
+            GameManager.Instance.FinishGame(GameManager.EndCondition.FireOut);
         }
     }
 
