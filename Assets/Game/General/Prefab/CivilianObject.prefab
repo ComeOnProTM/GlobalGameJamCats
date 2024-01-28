@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 279075939536183117}
   - component: {fileID: 1817779127193533143}
   - component: {fileID: 5515424670825104559}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 4204716351739152391}
   - component: {fileID: 8842688973960254769}
   - component: {fileID: 1991347351513349342}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CivilianObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -238,7 +238,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -301,7 +301,7 @@ MonoBehaviour:
   fireLayer:
     serializedVersion: 2
     m_Bits: 64
-  healthBackingField: 20
+  healthBackingField: 6
   damageTimerMax: 2
   healthBar: {fileID: 8339054925029795659}
   maxHealth: 6
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 1120960880683034750}
   - component: {fileID: 4317961321096772136}
   - component: {fileID: 6175795474052082899}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: HealthBarInner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 7106139674605900264}
   - component: {fileID: 425928030026035985}
   - component: {fileID: 8339054925029795659}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
