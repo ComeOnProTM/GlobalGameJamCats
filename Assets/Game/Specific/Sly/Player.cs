@@ -113,6 +113,7 @@ public class Player : MonoBehaviour
     {
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         InputManager.Instance.OnAlternateInteractAction += InputManager_OnAlternateInteractAction;
+        InputManager.Instance.OnSelectionAction += InputManager_OnSelectAction;
         damageTimer = damageTimerMax;
         currentHealth = maxHealth;
     }
@@ -167,12 +168,6 @@ public class Player : MonoBehaviour
                     isDashing = true;
                     if (dashTimer >= dashMaxTime)
                     {
-                        if (HeldCivilian != null)
-                        {
-                            HeldCivilian.transform.parent = null;
-                            HeldCivilian.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-                            HeldCivilian = null;
-                        }
                         //dashTimer = maxDash;
                         //rb.velocity = savedVelocity;
                         dashState = DashState.Cooldown;

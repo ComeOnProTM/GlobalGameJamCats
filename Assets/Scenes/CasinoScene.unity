@@ -66778,7 +66778,7 @@ GameObject:
   m_Component:
   - component: {fileID: 926630084}
   m_Layer: 5
-  m_Name: TimerOut
+  m_Name: GameOver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70703,7 +70703,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Timed Out
+  m_Text: Game Over
 --- !u!222 &1101574346
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -94348,6 +94348,14 @@ PrefabInstance:
       objectReference: {fileID: 1686355700}
     - target: {fileID: 599419019127971974, guid: 33d55c4d0f157804c9d4eba71a1b882a, type: 3}
       propertyPath: movementSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 599419019127971974, guid: 33d55c4d0f157804c9d4eba71a1b882a, type: 3}
+      propertyPath: healSpeedModifier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 599419019127971974, guid: 33d55c4d0f157804c9d4eba71a1b882a, type: 3}
+      propertyPath: damageSpeedModifier
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1801679711006945022, guid: 33d55c4d0f157804c9d4eba71a1b882a, type: 3}
