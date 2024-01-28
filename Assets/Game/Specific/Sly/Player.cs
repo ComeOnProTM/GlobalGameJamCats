@@ -145,143 +145,153 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Vector2 inputVector = inputManager.GetMovementVectorNormalized();
-
-        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-        transform.position += moveDir * movementSpeed * Time.deltaTime;
-
-        isWalking = moveDir != Vector3.zero;
-
-        switch (dashState)
+        if (GameManager.Instance.IsGamePlaying())
         {
-            case DashState.Ready:
-                break;
-            case DashState.Dashing:
-                dashTimer += Time.deltaTime;
-                isDashing = true;
-                if (dashTimer >= dashMaxTime)
-                {
-                    //dashTimer = maxDash;
-                    //rb.velocity = savedVelocity;
-                    dashState = DashState.Cooldown;
-                    OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
-                    {
-                        eventSmallDashState = smallDashState,
-                    });
-                }
-            break;
-            case DashState.Cooldown:
-                dashTimer += Time.deltaTime;
-                isDashing = false;
-                if (dashTimer >= dashCooldown)
-                {
-                    dashTimer = 0;
-                    dashState = DashState.Ready;
-                    OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
-                    {
-                        eventSmallDashState = smallDashState,
-                    });
-                }
-            break;
-        }
+            Vector2 inputVector = inputManager.GetMovementVectorNormalized();
 
-        switch (smallDashState)
-        {
-            case SmallDashState.SmallReady:
-                break;
-            case SmallDashState.SmallDashing:
-                smallDashTimer += Time.deltaTime;
-                isSmallDashing = true;
-                if (smallDashTimer >= smallDashMaxTime)
-                {
-                    //dashTimer = maxDash;
-                    //rb.velocity = savedVelocity;
-                    smallDashState = SmallDashState.SmallCooldown;
-                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
-                    {
-                        eventDashState = dashState,
-                    });
-                }
-                break;
-            case SmallDashState.SmallCooldown:
-                smallDashTimer += Time.deltaTime;
-                isSmallDashing = false;
-                if (smallDashTimer >= smallDashCooldown)
-                {
-                    smallDashTimer = 0;
-                    smallDashState = SmallDashState.SmallReady;
-                    OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
-                    {
-                        eventDashState = dashState,
-                    });
-                }
-                break;
-        }
+            Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
+            transform.position += moveDir * movementSpeed * Time.deltaTime;
 
-        if (isDashing)
-        {
-            // Move the player in the dash direction with dash speed
-            Extinguish();
-            PushNpc();
-            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
-            MovePlayer(moveDir, dashSpeed);
+            isWalking = moveDir != Vector3.zero;
 
-            // transform.position += moveDir * dashSpeed * Time.deltaTime;
-            //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
-            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
-            transform.position += moveDir * dashSpeed * Time.deltaTime;
-        }
-        if (isSmallDashing)
-        {
-            // Move the player in the dash direction with dash speed
-            Extinguish();
-            PushNpc();
-            moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
-            MovePlayer(moveDir, smallDashSpeed);
-
-            // transform.position += moveDir * dashSpeed * Time.deltaTime;
-            //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
-            //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
-            transform.position += moveDir * dashSpeed * Time.deltaTime;
-        }
-        else
-        {
-            MovePlayer(moveDir, movementSpeed);
-        }
-
-        if (damageTick)
-        {
-            damageTimer -= Time.deltaTime * healthSpeedModifier;
-            if (damageTimer < 0)
+            switch (dashState)
             {
-                damageTick = false;
-                damageTimer = damageTimerMax;
+                case DashState.Ready:
+                    break;
+                case DashState.Dashing:
+                    dashTimer += Time.deltaTime;
+                    isDashing = true;
+                    if (dashTimer >= dashMaxTime)
+                    {
+                        //dashTimer = maxDash;
+                        //rb.velocity = savedVelocity;
+                        dashState = DashState.Cooldown;
+                        OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
+                        {
+                            eventSmallDashState = smallDashState,
+                        });
+                    }
+                    break;
+                case DashState.Cooldown:
+                    dashTimer += Time.deltaTime;
+                    isDashing = false;
+                    if (dashTimer >= dashCooldown)
+                    {
+                        dashTimer = 0;
+                        dashState = DashState.Ready;
+                        OnSmallDashStateChanged?.Invoke(this, new OnSmallDashStateChangedEventArgs
+                        {
+                            eventSmallDashState = smallDashState,
+                        });
+                    }
+                    break;
             }
-        }
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
-        Debug.Log(hitColliders.Length);
-        if (hitColliders.Length > 0)
-        {
-            foreach (Collider _collider in hitColliders)
+            switch (smallDashState)
             {
-                if (!damageTick)
-                {
-                    if (_collider.TryGetComponent<SmallFireScript>(out SmallFireScript _))
+                case SmallDashState.SmallReady:
+                    break;
+                case SmallDashState.SmallDashing:
+                    smallDashTimer += Time.deltaTime;
+                    isSmallDashing = true;
+                    if (smallDashTimer >= smallDashMaxTime)
                     {
-                        currentHealth -= 1;
-                        healthBar.AdjustHealth(-1);
-                        damageTick = true;
-                        healthSpeedModifier = damageSpeedModifier;
+                        //dashTimer = maxDash;
+                        //rb.velocity = savedVelocity;
+                        smallDashState = SmallDashState.SmallCooldown;
+                        OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                        {
+                            eventDashState = dashState,
+                        });
                     }
-                    else if (currentHealth < maxHealth)
+                    break;
+                case SmallDashState.SmallCooldown:
+                    smallDashTimer += Time.deltaTime;
+                    isSmallDashing = false;
+                    if (smallDashTimer >= smallDashCooldown)
                     {
-                        currentHealth += 1;
-                        healthBar.AdjustHealth(+1);
-                        damageTick = true;
-                        healthSpeedModifier = healSpeedModifier;
+                        smallDashTimer = 0;
+                        smallDashState = SmallDashState.SmallReady;
+                        OnDashStateChanged?.Invoke(this, new OnDashStateChangedEventArgs
+                        {
+                            eventDashState = dashState,
+                        });
+                    }
+                    break;
+            }
+
+            if (isDashing)
+            {
+                // Move the player in the dash direction with dash speed
+                Extinguish();
+                PushNpc();
+                moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+                MovePlayer(moveDir, dashSpeed);
+
+                // transform.position += moveDir * dashSpeed * Time.deltaTime;
+                //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
+                //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+                transform.position += moveDir * dashSpeed * Time.deltaTime;
+            }
+            if (isSmallDashing)
+            {
+                // Move the player in the dash direction with dash speed
+                Extinguish();
+                PushNpc();
+                moveDir = new Vector3(savedVelocity.x, savedVelocity.y, 0);
+                MovePlayer(moveDir, smallDashSpeed);
+
+                // transform.position += moveDir * dashSpeed * Time.deltaTime;
+                //rb.AddForce(new Vector2(savedVelocity.x * dashSpeed, savedVelocity.y * dashSpeed));
+                //rb.MovePosition(rb.position + new Vector2(moveDir.x * 2f, moveDir.y * 2f) * Time.deltaTime);
+                transform.position += moveDir * dashSpeed * Time.deltaTime;
+            }
+            else
+            {
+                MovePlayer(moveDir, movementSpeed);
+            }
+
+            if (damageTick)
+            {
+                damageTimer -= Time.deltaTime * healthSpeedModifier;
+                if (damageTimer < 0)
+                {
+                    damageTick = false;
+                    damageTimer = damageTimerMax;
+                }
+            }
+
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
+            Debug.Log(hitColliders.Length);
+            if (hitColliders.Length > 0)
+            {
+                foreach (Collider _collider in hitColliders)
+                {
+                    if (!damageTick)
+                    {
+                        if (_collider.TryGetComponent<SmallFireScript>(out SmallFireScript _))
+                        {
+                            currentHealth -= 1;
+                            healthBar.AdjustHealth(-1);
+                            damageTick = true;
+                            healthSpeedModifier = damageSpeedModifier;
+                        }
+                        else if (currentHealth < maxHealth)
+                        {
+                            currentHealth += 1;
+                            healthBar.AdjustHealth(+1);
+                            damageTick = true;
+                            healthSpeedModifier = healSpeedModifier;
+                        }
                     }
                 }
+            }
+            else if (currentHealth < maxHealth)
+            {
+                currentHealth += 1;
+                healthBar.AdjustHealth(+1);
+                damageTick = true;
+                healthSpeedModifier = healSpeedModifier;
             }
         }
     }

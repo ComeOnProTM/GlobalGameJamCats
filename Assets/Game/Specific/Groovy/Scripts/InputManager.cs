@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
 
     private PlayerInputActions playerInputActions;
 
+    private bool isPaused;
+
     private void Awake()
     {
         Instance = this;
@@ -34,6 +36,7 @@ public class InputManager : MonoBehaviour
     private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         OnPauseAction?.Invoke(this, EventArgs.Empty);
+        TogglePause();
     }
 
     private void AlternateInteract_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -48,7 +51,7 @@ public class InputManager : MonoBehaviour
 
     public Vector2 GetMovementVectorNormalized()
     {
-        if (!Player.Instance.GetIsDashing())
+        if (!Player.Instance.GetIsDashing() && GameManager.Instance.IsGamePlaying())
         {
             // Regular movement based on keyboard input
             Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
@@ -94,5 +97,18 @@ public class InputManager : MonoBehaviour
             return inputVector;
         }
         return new Vector2(0, 0);
+    }
+
+    private void TogglePause()
+    {
+        isPaused = !isPaused;
+        if (isPaused)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
     }
 }
