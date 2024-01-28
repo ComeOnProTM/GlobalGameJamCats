@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     }
 
     [Header("References")]
-    [SerializeField] private InputManager inputManager;
+    //[SerializeField] private InputManager inputManager;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private HealthBar healthBar;
 
@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
     {
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         InputManager.Instance.OnAlternateInteractAction += InputManager_OnAlternateInteractAction;
-        InputManager.Instance.OnSelectionAction += InputManager_OnSelectAction;
+ //       InputManager.Instance.OnSelectionAction += InputManager_OnSelectAction;
         damageTimer = damageTimerMax;
         currentHealth = maxHealth;
     }
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
     {
         if (GameManager.Instance.IsGamePlaying())
         {
-            Vector2 inputVector = inputManager.GetMovementVectorNormalized();
+            Vector2 inputVector = InputManager.Instance.GetMovementVectorNormalized();
 
             Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
             transform.position += moveDir * movementSpeed * Time.deltaTime;
