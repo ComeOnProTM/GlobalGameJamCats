@@ -7,6 +7,7 @@ using static Unity.Mathematics.math;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using static Player;
+using Unity.Profiling;
 
 public class Player : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputManager inputManager;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private HealthBar healthBar;
 
     [Header("Movement")]
     [SerializeField] private PlayerState playerState;
@@ -53,7 +55,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float smallDashCooldown = 2f;
     private float smallDashTimer;
 
+    [Header("Health")]
     [SerializeField] private int healthBackingField = 20;
+    [SerializeField] private float damageTimerMax = 1.275f;
+    private bool damageTick;
+    private float damageTimer;
+    private float healthSpeedModifier;
+    [SerializeField] private float damageSpeedModifier = 1f;
+    [SerializeField] private float healSpeedModifier = 3f;
+    private float currentHealth;
+
     public int Health 
     {
         get => healthBackingField;
@@ -99,6 +110,8 @@ public class Player : MonoBehaviour
     {
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         InputManager.Instance.OnAlternateInteractAction += InputManager_OnAlternateInteractAction;
+        damageTimer = damageTimerMax;
+        currentHealth = maxHealth;
     }
 
     private void InputManager_OnAlternateInteractAction(object sender, EventArgs e)
@@ -235,6 +248,42 @@ public class Player : MonoBehaviour
         {
             MovePlayer(moveDir, movementSpeed);
         }
+
+        if (damageTick)
+        {
+            damageTimer -= Time.deltaTime * healthSpeedModifier;
+            if (damageTimer < 0)
+            {
+                damageTick = false;
+                damageTimer = damageTimerMax;
+            }
+        }
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, fireLayer);
+        Debug.Log(hitColliders.Length);
+        if (hitColliders.Length > 0)
+        {
+            foreach (Collider _collider in hitColliders)
+            {
+                if (!damageTick)
+                {
+                    if (_collider.TryGetComponent<SmallFireScript>(out SmallFireScript _))
+                    {
+                        currentHealth -= 1;
+                        healthBar.AdjustHealth(-1);
+                        damageTick = true;
+                        healthSpeedModifier = damageSpeedModifier;
+                    }
+                    else if (currentHealth < maxHealth)
+                    {
+                        currentHealth += 1;
+                        healthBar.AdjustHealth(+1);
+                        damageTick = true;
+                        healthSpeedModifier = healSpeedModifier;
+                    }
+                }
+            }
+        }
     }
 
     void Extinguish()
@@ -244,13 +293,11 @@ public class Player : MonoBehaviour
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.gameObject.TryGetComponent<SmallFireScript>(out SmallFireScript fire))
-
             {
                 Destroy(fire);
             }
         }
     }
-
 
     private void PushNpc()
     {

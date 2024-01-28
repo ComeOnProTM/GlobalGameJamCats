@@ -41,48 +41,51 @@ public class InputManager : MonoBehaviour
 
     public Vector2 GetMovementVectorNormalized()
     {
-        // Regular movement based on keyboard input
-        Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
+        if (!Player.Instance.GetIsDashing())
+        {
+            // Regular movement based on keyboard input
+            Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
 
-        inputVector = inputVector.normalized;
+            inputVector = inputVector.normalized;
 
-        if (inputVector.x == 0 && inputVector.y == 0)
-        {
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+            if (inputVector.x == 0 && inputVector.y == 0)
             {
-                eventPlayerState = PlayerState.Idle,
-            });
-        }
-        if (inputVector.x > 0)
-        {
-            Debug.Log($"{inputVector.x} and {inputVector.y}");
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                {
+                    eventPlayerState = PlayerState.Idle,
+                });
+            }
+            if (inputVector.x > 0)
             {
-                eventPlayerState = PlayerState.Right,
-            });
-        }
-        if (inputVector.x < 0)
-        {
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                {
+                    eventPlayerState = PlayerState.Right,
+                });
+            }
+            if (inputVector.x < 0)
             {
-                eventPlayerState = PlayerState.Left,
-            });
-        }
-        if (inputVector.y > 0)
-        {
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                {
+                    eventPlayerState = PlayerState.Left,
+                });
+            }
+            if (inputVector.y > 0)
             {
-                eventPlayerState = PlayerState.Up,
-            });
-        }
-        if (inputVector.y < 0)
-        {
-            OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                {
+                    eventPlayerState = PlayerState.Up,
+                });
+            }
+            if (inputVector.y < 0)
             {
-                eventPlayerState = PlayerState.Down,
-            });
-        }
+                OnPlayerStateChanged?.Invoke(this, new OnPlayerStateChangedEventArgs
+                {
+                    eventPlayerState = PlayerState.Down,
+                });
+            }
 
-        return inputVector;
+            return inputVector;
+        }
+        return new Vector2(0, 0);
     }
 }
