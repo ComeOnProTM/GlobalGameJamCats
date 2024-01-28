@@ -303,7 +303,7 @@ MonoBehaviour:
     m_Bits: 64
   healthBackingField: 20
   damageTimerMax: 2
-  healthBar: {fileID: 8339054925029795659}
+  healthBar: {fileID: 0}
   maxHealth: 6
   damageSpeedModifier: 1
   healSpeedModifier: 3
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 3373153133270769709}
   - component: {fileID: 7106139674605900264}
   - component: {fileID: 425928030026035985}
-  - component: {fileID: 8339054925029795659}
+  - component: {fileID: 9170156443335510191}
   m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
@@ -471,7 +471,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8339054925029795659
+--- !u!114 &9170156443335510191
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -480,10 +480,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7522265925694783768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc31df9591b5eee4e957884ebe55d542, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d6b78f0845e4e64fabd68f7ce5dcc8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   healthBarImage: {fileID: 6175795474052082899}
-  player: {fileID: 0}
+  npc: {fileID: 8842688973960254769}
   lowHealth: {r: 1, g: 0, b: 0, a: 1}
   highHealth: {r: 0, g: 1, b: 0, a: 1}

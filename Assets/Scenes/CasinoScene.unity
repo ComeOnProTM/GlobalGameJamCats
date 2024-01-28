@@ -83576,7 +83576,7 @@ MonoBehaviour:
   fireLayer:
     serializedVersion: 2
     m_Bits: 64
-  healthBackingField: 20
+  healthBackingField: 6
   damageTimerMax: 2
   healthBar: {fileID: 1940552741}
   maxHealth: 6
