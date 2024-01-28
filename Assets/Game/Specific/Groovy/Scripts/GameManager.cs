@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
 
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -30,14 +31,51 @@ public class GameManager : MonoBehaviour
     private EndCondition endCondition;
 
     private float timerStart;
-    private float timerStartMax = 3f;
+    [SerializeField]private float timerStartMax = 3f;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    private void Start()
+ [SerializeField]private AudioClip musicClip;
+public class AudioPlayer : MonoBehaviour
+{
+    // Reference to the AudioSource component
+    private AudioSource audioSource;
+
+    // The audio clip to be played
+    private AudioClip musicClip;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Get the AudioSource component attached to the GameObject
+        audioSource = GetComponent<AudioSource>();
+
+        // Set the audio clip to be played
+        audioSource.clip = musicClip;
+    }
+
+    // Function to play the audio when triggered
+    public void PlayAudio()
+    {
+        // Check if the AudioSource and AudioClip are set
+        if (audioSource != null && musicClip != null)
+        {
+            // Play the audio
+            audioSource.Play();
+        }
+        else
+        {
+            // Log an error if AudioSource or AudioClip is not set
+            Debug.LogError("AudioSource or AudioClip is not set!");
+        }
+    }
+}
+
+
+private void Start()
     {
         timerStart = timerStartMax;
         OnStateChanged?.Invoke(this, EventArgs.Empty);
