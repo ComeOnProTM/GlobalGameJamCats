@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnInteractAction;
     public event EventHandler OnAlternateInteractAction;
     public event EventHandler OnPauseAction;
+    public event EventHandler OnSelectAction;
     public event EventHandler<OnPlayerStateChangedEventArgs> OnPlayerStateChanged;
     public class OnPlayerStateChangedEventArgs : EventArgs
     {
@@ -31,6 +32,12 @@ public class InputManager : MonoBehaviour
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.AlternateInteract.performed += AlternateInteract_performed;
         playerInputActions.Player.Pause.performed += Pause_performed;
+        playerInputActions.Player.Select.performed += Select_performed;
+    }
+
+    private void Select_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnSelectAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
