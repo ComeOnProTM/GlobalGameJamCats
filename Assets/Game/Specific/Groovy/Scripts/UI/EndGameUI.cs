@@ -10,10 +10,13 @@ public class EndGameUI : MonoBehaviour
     [SerializeField] private GameObject fireOutEndGameUI;
     [SerializeField] private GameObject timerOutEndGameUI;
     [SerializeField] private GameObject civSavedEndGameUI;
+    [SerializeField] private GameObject slideOut;
 
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Text timeText;
     [SerializeField] private float finalTime;
+
+    [SerializeField] private Button mainMenu;
 
     private void Start()
     {
@@ -48,6 +51,8 @@ public class EndGameUI : MonoBehaviour
     {
         finalTime = playerUI.maxTime - playerUI.timeRemaining;
         timeText.gameObject.SetActive(true);
+        mainMenu.gameObject.SetActive(true);
+        mainMenu.onClick.AddListener(() => slideOut.SetActive(true));
         //timeText.text = finalTime.ToString("0");
         float minutes = Mathf.FloorToInt(finalTime / 60);
         float seconds = Mathf.FloorToInt(finalTime % 60);
@@ -59,6 +64,8 @@ public class EndGameUI : MonoBehaviour
     {
         finalTime = playerUI.maxTime - playerUI.timeRemaining;
         timeText.gameObject.SetActive(true);
+        mainMenu.gameObject.SetActive(true);
+        mainMenu.onClick.AddListener(() => slideOut.SetActive(true));
         //timeText.text = finalTime.ToString("0");
         float minutes = Mathf.FloorToInt(finalTime / 60);
         float seconds = Mathf.FloorToInt(finalTime % 60);
@@ -68,7 +75,6 @@ public class EndGameUI : MonoBehaviour
 
     private void ShowTimerOut()
     {
-        
         timerOutEndGameUI.SetActive(true);
     }
 
