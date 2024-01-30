@@ -29,7 +29,9 @@ public class SmallFireScript : MonoBehaviour
     }
 
     private void Update()
+
     {
+        transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.x, this.transform.localScale.x);
         timeTillNextFire -= Time.deltaTime;
 
         if (timeTillNextFire < 0)
